@@ -94,7 +94,9 @@ def customer_list(request):
 
 def product_list(request):
     products = Product.objects.all()
-    return render(request, "core/product_list.html", {"product": products})
+    return render(request, "core/product_list.html", {
+        "products": products
+        })
 
 def transaction_list(request):
     transactions = request.session.get('transactions_list', [])  # Replace with actual data fetching logic
@@ -164,7 +166,9 @@ def add_supplier(request):
 
 def suppliers(request):
     suppliers = Supplier.objects.all()
-    return render(request, "core/suppliers.html", {"suppliers": suppliers})
+    return render(request, "core/suppliers.html", {
+        "suppliers": suppliers
+        })
 
 def revenue_report(request):
     revenue_data = RevenueReport.objects.all()

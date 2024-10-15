@@ -5,9 +5,19 @@
 <h1>Suppliers List</h1>
 <ul>
     {% for supplier in suppliers %}
-        <li>{{ supplier.name }}</li>
+        <li>
+            <div class="supplier-details">
+                <p><strong>Supplier Name:</strong> {{ supplier.name }}</p>
+                <p><strong>Address:</strong> {{ supplier.address }}</p>
+                <p><strong>Phone Number:</strong> {{ supplier.phone_number }}</p>
+                <p><strong>Email:</strong> {{ supplier.email }}</p>
+                <p><strong>Contact Person:</strong> {{ supplier.contact_person }}</p>
+                <p><strong>Supplier ID:</strong> {{ supplier.id }}</p>
+            </div>
+            <hr>
+        </li>
     {% endfor %}
 </ul>
-<a href="{% url 'core:add_supplier' %}">Add Supplier/a>
+<a href="{% url 'core:add_supplier' %}">Add Supplier</a>
 <a href="{% url 'core:dashboard' %}">Back to Dashboard</a>
 {% endblock %}

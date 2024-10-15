@@ -5,7 +5,21 @@
 <h1>Product List</h1>
 <ul>
     {% for product in products %}
-        <li>{{ product.name }}</li>
+        <li>
+            <div class="product-details">
+                <p><strong>Product Name:</strong> {{ product.name }}</p>
+                <p><strong>SKU:</strong> {{ product.sku }}</p>
+                <p><strong>Price:</strong> {{ product.price }}</p>
+                <p><strong>Stock:</strong> {{ product.stock }}</p>
+                <p><strong>Supplier ID:</strong> <a href="{% url 'core:suppliers' product.supplier_id %}">{{ product.supplier_id }}</a></p>
+                <p><strong>Low Stock Threshold:</strong> {{ product.low_stock_threshold }}</p>
+                <p><strong>Last Updated:</strong> {{ product.last_updated }}</p>
+                <p><strong>Barcode:</strong> {{ product.barcode }}</p>
+            </div>
+            <hr>
+        </li>
+    {% empty %}
+        <li>No products found.</li>
     {% endfor %}
 </ul>
 <a href="{% url 'core:add_product' %}">Add Product</a>
