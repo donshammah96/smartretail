@@ -170,6 +170,10 @@ def suppliers(request):
         "suppliers": suppliers
         })
 
+def supplier_detail(request, pk):
+    supplier = get_object_or_404(Supplier, pk=pk)
+    return render(request, 'core/supplier_detail.html', {'supplier': supplier})
+
 def revenue_report(request):
     revenue_data = RevenueReport.objects.all()
     return render(request, "core/revenue_report.html", {"revenue_data": revenue_data})

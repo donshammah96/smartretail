@@ -74,6 +74,7 @@ class Employee(models.Model):
 class Supplier(models.Model):
     name = models.CharField(max_length=255)
     contact_person = models.CharField(max_length=255)
+    address = models.CharField(max_length=255, default="123 Supplier St, Supplier City, Supplier Country")
     phone = models.CharField(max_length=15, default="0000000000")
     email = models.EmailField()
     delivery_times = models.CharField(max_length=255)

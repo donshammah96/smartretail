@@ -19,6 +19,7 @@ urlpatterns = [
     path('employees/add/', views.add_employee, name='add_employee'),
     path('suppliers/', views.suppliers, name='suppliers'),
     path('suppliers/add/', views.add_supplier, name='add_supplier'),
+    path('suppliers/<int:pk>/', views.supplier_detail, name='supplier_detail'),
     path('revenue_report/', views.revenue_report, name='revenue_report'),
     path('revenue_report/add/', views.add_revenue, name='add_revenue'),
     path('expense_report/', views.expense_report, name='expense_report'),
