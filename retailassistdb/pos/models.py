@@ -1,18 +1,29 @@
 from django.utils import timezone
 from django.db import models
 from django.apps import apps
+from django.db.models import Sum, Count
 
 class Transaction(models.Model):
     product = models.ForeignKey('core.Product', on_delete=models.CASCADE, default=1)
-    customer = models.ForeignKey('core.Customer', on_delete=models.SET_NULL, null=True, blank=True)
-    payment_method = models.CharField(max_length=50, default="Cash")  # Add default value
-    total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  # Add default value
-    transaction_date = models.DateTimeField(default=timezone.now)  # Add default value
+    customer = models.ForeignKey('core.Customer', on_delete=models.CASCADE, null=True, blank=True)
+    employee = models.ForeignKey('core.Employee', on_delete=models.CASCADE, null=True, blank=True)
+    payment_method = models.CharField(max_length=50, default="Cash")
+    amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    date = models.DateTimeField(default=timezone.now)
     points_earned = models.PositiveIntegerField(default=0)
+    items = models.ManyToManyField('core.Product', through='pos.Sale', related_name='transactions')
 
     def __str__(self):
-        return f"Transaction {self.id} on {self.transaction_date} for {self.total_amount} by {self.customer.name}"
-
+        return (
+            f"Transaction ID: {self.id}\n"
+            f"Transaction Date: {self.date}\n" 
+            f"Items: {self.items}\n"
+            f"Amount: {self.amount}\n " 
+            f"Customer ID: {self.customer.id}\n"
+            f"Points Earned: {self.points_earned}\n"
+            f"Employee ID: {self.employee.id}\n"
+        )
+    
     def calculate_total(self):
         self.total_amount = sum(sale.subtotal for sale in self.sales.all())
         self.save()
@@ -21,44 +32,32 @@ class Transaction(models.Model):
         self.points_earned = int(self.total_amount / 10)  # Example: 1 point per $10 spent
         self.customer.add_loyalty_points(self.points_earned)
         self.save()
+
+    @staticmethod
+    def calculate_profit(transactions):
+        total_revenue = transactions.aggregate(Sum('amount'))['amount__sum'] or 0
+        total_cost = sum(transaction.product.cost_price * transaction.items.count() for transaction in transactions)
+        return total_revenue - total_cost
+
+    @staticmethod
+    def get_top_selling_product(transactions):
+        top_product = transactions.values('product__name').annotate(total_sold=Count('product')).order_by('-total_sold').first()
+        return top_product['product__name'] if top_product else None
+
+    @staticmethod
+    def get_top_customer(transactions):
+        top_customer = transactions.values('customer__name').annotate(total_spent=Sum('amount')).order_by('-total_spent').first()
+        return top_customer['customer__name'] if top_customer else None
         
 class Discount(models.Model):
     name = models.CharField(max_length=255)
-    valid_from = models.DateTimeField()
-    valid_until = models.DateTimeField()
+    valid_from = models.DateTimeField(default=timezone.now)
+    valid_until = models.DateTimeField(default=timezone.now)
     amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  # Add default value
     special_conditions = models.TextField(default="No special conditions")
 
     def __str__(self):
         return f"Discount {self.amount} from {self.valid_from} to {self.valid_until}"
-        
-class Sale(models.Model):
-    product = models.ForeignKey('core.Product', on_delete=models.CASCADE)
-    transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, related_name='sales')
-    employee = models.ForeignKey('core.Employee', on_delete=models.CASCADE, null=True, default=None)  # Add default value
-    date = models.DateTimeField(default=timezone.now)  # Add default value
-    quantity = models.PositiveIntegerField(default=0)
-    discount = models.ForeignKey(Discount, on_delete=models.CASCADE, null=True, blank=True)
-    subtotal = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  # Add default value
-    final_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  # Add default value
-    payment_method = models.CharField(max_length=50, default="Cash")  # Add default value
-    
-    def __str__(self):
-        return f"Sale {self.quantity} of {self.product.name} by {self.employee.name}"
-
-    def save(self, *args, **kwargs):
-        if self.subtotal is None:
-            self.subtotal = self.product.price * self.quantity
-        self.calculate_final_price()
-        self.product.update_stock(-self.quantity)  # Deduct sold quantity from stock
-        super(Sale, self).save(*args, **kwargs)
-
-    def calculate_final_price(self):
-        if self.discount:
-            discount_amount = self.subtotal * (self.discount.percentage / 100)
-            self.final_price = self.subtotal - discount_amount
-        else:
-            self.final_price = self.subtotal
             
     
 class SpecialDiscount(models.Model):
@@ -66,7 +65,7 @@ class SpecialDiscount(models.Model):
     name = models.CharField(max_length=255)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     discount_percent = models.DecimalField(max_digits=5, decimal_places=2)
-    valid_until = models.DateField()
+    valid_until = models.DateField(default=timezone.now)
     special_conditions = models.TextField(default="No special conditions")
 
     def __str__(self):
@@ -75,7 +74,7 @@ class SpecialDiscount(models.Model):
 class StockAlert(models.Model):
     product = models.ForeignKey('core.Product', on_delete=models.CASCADE)
     threshold = models.PositiveIntegerField(default=150)
-    date = models.DateField()
+    date = models.DateField(default=timezone.now)
 
     def __str__(self):
         return f"Stock Alert for {self.product.name} at {self.alert_threshold} on {self.alert_date}"
@@ -101,6 +100,8 @@ class SalesAnalytics(models.Model):
     
 class CustomerAnalytics(models.Model):
     customer = models.ForeignKey('core.Customer', on_delete=models.CASCADE, null=True)
+    product = models.ForeignKey('core.Product', on_delete=models.CASCADE, null=True)
+    purchases = models.ManyToManyField('core.Product', through='pos.Sale', related_name='customer_analytics')
     total_spent = models.DecimalField(max_digits=12, decimal_places=2)
     report_date = models.DateField(default=timezone.now)
     total_loyalty_points_earned = models.PositiveIntegerField(default=0)
@@ -118,12 +119,41 @@ class CustomerAnalytics(models.Model):
         total_loyalty_points_earned = sum([transaction.total_amount // 10 for transaction in transactions])
         return cls.objects.create(customer=customer, total_spent=total_spent, total_loyalty_points_earned=total_loyalty_points_earned)
     
+class Sale(models.Model):
+    product = models.ForeignKey('core.Product', on_delete=models.CASCADE)
+    customer_analytics = models.ForeignKey(CustomerAnalytics, on_delete=models.CASCADE, null=True)
+    transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, related_name='sales')
+    employee = models.ForeignKey('core.Employee', on_delete=models.CASCADE, null=True, default=None)  # Add default value
+    date = models.DateTimeField(default=timezone.now)  # Add default value
+    quantity = models.PositiveIntegerField(default=0)
+    discount = models.ForeignKey(Discount, on_delete=models.CASCADE, null=True, blank=True)
+    subtotal = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  # Add default value
+    final_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  # Add default value
+    payment_method = models.CharField(max_length=50, default="Cash")  # Add default value
     
+    def __str__(self):
+        return f"Sale {self.quantity} of {self.product.name} by {self.employee.name}"
+
+    def save(self, *args, **kwargs):
+        if self.subtotal is None:
+            self.subtotal = self.product.price * self.quantity
+        self.calculate_final_price()
+        self.product.update_stock(-self.quantity)  # Deduct sold quantity from stock
+        super(Sale, self).save(*args, **kwargs)
+
+    def calculate_final_price(self):
+        if self.discount:
+            discount_amount = self.subtotal * (self.discount.percentage / 100)
+            self.final_price = self.subtotal - discount_amount
+        else:
+            self.final_price = self.subtotal
+
 class Payment(models.Model):
+    sale = models.ForeignKey(Sale, on_delete=models.CASCADE, default=None, null=True)
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE)
     method = models.CharField(max_length=50, choices=[('Cash', 'Cash'), ('Card', 'Card'), ('M-Pesa', 'M-Pesa')])
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    payment_date = models.DateTimeField(auto_now_add=True)
+    payment_date = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f"Payment of {self.amount} made on {self.payment_date} for transaction {self.transaction.id}"
@@ -143,7 +173,8 @@ class Return(models.Model):
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, default=None, null=True)
     product = models.ForeignKey('core.Product', on_delete=models.CASCADE, default=None, null=True)
     quantity = models.PositiveIntegerField(default=0)
-    return_reason = models.TextField(default="No reason provided")
+    reason = models.TextField(default="No reason provided")
+    date = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f"Return of {self.quantity} {self.product.name} from transaction {self.transaction.id}"
@@ -170,7 +201,7 @@ class Refund(models.Model):
     return_sale = models.ForeignKey(Return, on_delete=models.CASCADE, default=None, null=True)
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, default=None, null=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    refund_date = models.DateTimeField(auto_now_add=True)
+    refund_date = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f"Refund of {self.amount} for transaction {self.transaction.id}"

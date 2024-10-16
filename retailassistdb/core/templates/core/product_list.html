@@ -3,18 +3,35 @@
 {% block header %}Product List{% endblock %}
 {% block content %}
 <h1>Product List</h1>
-<ul>
+
+<!-- Search and Filter -->
+<div class="mb-3">
+    <input type="text" id="searchInput" class="form-control" placeholder="Search by product name or SKU">
+</div>
+
+<!-- Sort Products -->
+<div class="mb-3">
+    <select id="sortSelect" class="form-control">
+        <option value="name">Sort by Name</option>
+        <option value="price">Sort by Price</option>
+        <option value="stock">Sort by Stock</option>
+    </select>
+</div>
+
+<ul id="productList">
     {% for product in products %}
-        <li>
+        <li class="product-item">
             <div class="product-details">
                 <p><strong>Product Name:</strong> {{ product.name }}</p>
                 <p><strong>SKU:</strong> {{ product.sku }}</p>
                 <p><strong>Price:</strong> {{ product.price }}</p>
-                <p><strong>Stock:</strong> {{ product.stock }}</p>
-                <p><strong>Supplier ID:</strong> <a href="{% url 'core:supplier_detail' product.supplier_id %}">{{ product.supplier_id }}</a></p>
+                <p><strong>Stock:</strong> <span class="stock">{{ product.stock }}</span> <button class="btn btn-sm btn-primary update-stock">Update Stock</button></p>
+                <p><strong>Supplier ID:</strong> <a href="{% url 'core:detail' model_name='supplier' pk=product.supplier_id %}">{{ product.supplier_id }}</a></p>
                 <p><strong>Low Stock Threshold:</strong> {{ product.low_stock_threshold }}</p>
                 <p><strong>Last Updated:</strong> {{ product.last_updated }}</p>
                 <p><strong>Barcode:</strong> {{ product.barcode }}</p>
+                <p><strong>Expiration Date:</strong> {{ product.expiration_date }}</p>
+                <p><strong>Restock Date:</strong> {{ product.restock_date }}</p>
             </div>
             <hr>
         </li>
@@ -22,6 +39,62 @@
         <li>No products found.</li>
     {% endfor %}
 </ul>
-<a href="{% url 'core:add_product' %}">Add Product</a>
-<a href="{% url 'core:dashboard' %}">Back to Dashboard</a>
+
+<a href="{% url 'core:add' model_name='product' %}" class="btn btn-primary">Add Product</a>
+<a href="{% url 'core:dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        const sortSelect = document.getElementById('sortSelect');
+        const productList = document.getElementById('productList');
+        const productItems = Array.from(productList.getElementsByClassName('product-item'));
+
+        // Search and Filter
+        searchInput.addEventListener('input', function() {
+            const query = searchInput.value.toLowerCase();
+            productItems.forEach(item => {
+                const name = item.querySelector('.product-details p:nth-child(1)').textContent.toLowerCase();
+                const sku = item.querySelector('.product-details p:nth-child(2)').textContent.toLowerCase();
+                if (name.includes(query) || sku.includes(query)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        // Sort Products
+        sortSelect.addEventListener('change', function() {
+            const sortBy = sortSelect.value;
+            const sortedItems = productItems.sort((a, b) => {
+                const aValue = a.querySelector(`.product-details p:nth-child(${sortBy === 'name' ? 1 : sortBy === 'price' ? 3 : 4})`).textContent;
+                const bValue = b.querySelector(`.product-details p:nth-child(${sortBy === 'name' ? 1 : sortBy === 'price' ? 3 : 4})`).textContent;
+                return sortBy === 'name' ? aValue.localeCompare(bValue) : parseFloat(aValue) - parseFloat(bValue);
+            });
+            sortedItems.forEach(item => productList.appendChild(item));
+        });
+
+        // Real-time Stock Update
+        productList.addEventListener('click', function(event) {
+            if (event.target.classList.contains('update-stock')) {
+                const stockSpan = event.target.previousElementSibling;
+                const newStock = prompt('Enter new stock value:', stockSpan.textContent);
+                if (newStock !== null) {
+                    stockSpan.textContent = newStock;
+                }
+            }
+        });
+
+        // Confirmation Prompt
+        const links = document.querySelectorAll('a');
+        links.forEach(link => {
+            link.addEventListener('click', function(event) {
+                if (!confirm('Are you sure you want to navigate away from this page?')) {
+                    event.preventDefault();
+                }
+            });
+        });
+    });
+</script>
 {% endblock %}

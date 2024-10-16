@@ -8,6 +8,6 @@
         <li>{{ employee.name }}</li>
     {% endfor %}
 </ul>
-<a href="{% url 'core:add_employee' %}">Add Employee/a>
+<a href="{% url 'core:add' model_name='employee' %}">Add Employee</a>
 <a href="{% url 'core:dashboard' %}">Back to Dashboard</a>
 {% endblock %}

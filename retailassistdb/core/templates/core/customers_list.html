@@ -8,6 +8,6 @@
         <li>{{ customer.name }}</li>
     {% endfor %}
 </ul>
-<a href="{% url 'core:add_customer' %}">Add Customer/a>
+<a href="{% url 'core:add' model_name='customer' %}">Add Customer</a>
 <a href="{% url 'core:dashboard' %}">Back to Dashboard</a>
 {% endblock %}

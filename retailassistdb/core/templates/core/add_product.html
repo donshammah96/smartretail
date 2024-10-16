@@ -3,11 +3,64 @@
 {% block header %}Add Product{% endblock %}
 {% block content %}
 <h1>Add Product</h1>
-<form method="post" action="{% url 'core:add_product' %}">
+<form id="addProductForm" method="post" action="{% url 'core:add_product' %}">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Add Product</button>
+    <button type="submit" class="btn btn-primary">Add Product</button>
 </form>
-<a href="{% url 'core:product_list' %}">View Products</a>
-<a href="{% url 'core:dashboard' %}">Back to Dashboard</a>
+<a href="{% url 'core:product_list' %}" class="btn btn-secondary">View Products</a>
+<a href="{% url 'core:dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('addProductForm');
+
+        // Form validation
+        form.addEventListener('submit', function(event) {
+            let isValid = true;
+            const inputs = form.querySelectorAll('input[required], textarea[required], select[required]');
+            inputs.forEach(input => {
+                if (!input.value.trim()) {
+                    isValid = false;
+                    input.classList.add('is-invalid');
+                } else {
+                    input.classList.remove('is-invalid');
+                }
+            });
+
+            if (!isValid) {
+                event.preventDefault();
+                alert('Please fill out all required fields.');
+            } else {
+                // Confirmation prompt
+                if (!confirm('Are you sure you want to add this product?')) {
+                    event.preventDefault();
+                }
+            }
+        });
+
+        // Real-time feedback for SKU
+        const skuInput = form.querySelector('input[name="sku"]');
+        if (skuInput) {
+            skuInput.addEventListener('input', function() {
+                const sku = skuInput.value.trim();
+                if (sku) {
+                    // Simulate an API call to check if SKU is taken
+                    setTimeout(() => {
+                        if (sku === 'SKU001') { // Example condition
+                            skuInput.classList.add('is-invalid');
+                            skuInput.setCustomValidity('This SKU is already taken.');
+                        } else {
+                            skuInput.classList.remove('is-invalid');
+                            skuInput.setCustomValidity('');
+                        }
+                    }, 500);
+                } else {
+                    skuInput.classList.remove('is-invalid');
+                    skuInput.setCustomValidity('');
+                }
+            });
+        }
+    });
+</script>
 {% endblock %}

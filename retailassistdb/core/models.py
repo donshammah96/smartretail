@@ -4,6 +4,8 @@ from django.apps import apps
 
 class Product(models.Model):
     name = models.CharField(max_length=255)
+    category = models.CharField(max_length=255, default="General")
+    description = models.CharField(max_length=255, default="Product description")
     sku = models.CharField(max_length=50, unique=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     stock = models.PositiveIntegerField(default=0)
@@ -11,7 +13,8 @@ class Product(models.Model):
     low_stock_threshold = models.PositiveIntegerField(default=10)
     last_updated = models.DateTimeField(auto_now=True)
     barcode = models.CharField(max_length=13, default="0000000000000")
-
+    expiration_date = models.DateField(null=True, blank=True)  # Add this line
+    restock_date = models.DateField(null=True, blank=True)  # Add this line
     def __str__(self):
         return (
             f"Product name: {self.name}\n"
@@ -40,6 +43,7 @@ class Customer(models.Model):
     email = models.EmailField()
     phone = models.CharField(max_length=15, default="0000000000")
     loyalty_points = models.PositiveIntegerField(default=0)
+    joined_date = models.DateField(default=timezone.now)
 
     def __str__(self):
         return (
@@ -59,7 +63,7 @@ class Employee(models.Model):
     email = models.EmailField(unique=True, null=True, blank=True)
     position = models.CharField(max_length=100)
     hire_date = models.DateField()
-    shift_schedule = models.CharField(max_length=255)
+    shift_schedule = models.ForeignKey('Shift', on_delete=models.CASCADE, null=True, related_name='employees')
 
     def __str__(self):
         return (
@@ -92,6 +96,7 @@ class RevenueReport(models.Model):
     report_date = models.DateField(default=timezone.now)
     total_revenue = models.DecimalField(max_digits=12, decimal_places=2)
     total_profit = models.DecimalField(max_digits=12, decimal_places=2)
+    details = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return f"Revenue Report for {self.report_date} : Total Revenue: {self.total_revenue}, Total Profit: {self.total_profit}"
@@ -100,17 +105,17 @@ class RevenueReport(models.Model):
     def generate_report(cls, start_date, end_date):
         Transaction = apps.get_model('pos', 'Transaction')
         transactions = Transaction.objects.filter(transaction_date__gte=start_date, transaction_date__lte=end_date)
-        total_revenue = sum([transaction.total_amount for transaction in transactions])
+        total_revenue = sum([transaction.amount for transaction in transactions])
         total_profit = cls.calculate_profit(transactions)
         return cls.objects.create(total_revenue=total_revenue, total_profit=total_profit)
 
     @staticmethod
     def calculate_profit(transactions):
-        return sum([transaction.total_amount * 0.2 for transaction in transactions]) * 0.2
+        return sum([transaction.amount * 0.2 for transaction in transactions]) * 0.2
 
 class ExpenseReport(models.Model):
     report_date = models.DateField(default=timezone.now)
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
     total_expenses = models.DecimalField(max_digits=12, decimal_places=2)
 
     def __str__(self):
@@ -126,8 +131,10 @@ class DataAnalytics(models.Model):
     total_sales = models.DecimalField(max_digits=12, decimal_places=2)
     total_expenses = models.DecimalField(max_digits=12, decimal_places=2)
     total_profit = models.DecimalField(max_digits=12, decimal_places=2)
-    top_selling_product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
-    top_customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True)
+    top_selling_product = models.ForeignKey('Product', on_delete=models.CASCADE, null=True)
+    top_customer = models.ForeignKey('Customer', on_delete=models.CASCADE, null=True)
+    metrics = models.TextField(null=True, blank=True)  
+    insights = models.TextField(null=True, blank=True)  
 
     def __str__(self):
         return (
@@ -136,7 +143,9 @@ class DataAnalytics(models.Model):
             f"Total Expenses: {self.total_expenses}\n"
             f"Total Profit: {self.total_profit}\n"
             f"Top Selling Product: {self.top_selling_product}\n"
-            f"Top Customer: {self.top_customer}"
+            f"Top Customer: {self.top_customer}\n"
+            f"Metrics: {self.metrics}\n"
+            f"Insights: {self.insights}"
         )
 
     @classmethod
@@ -148,9 +157,21 @@ class DataAnalytics(models.Model):
         total_profit = cls.calculate_profit(transactions)
         top_selling_product = cls.get_top_selling_product(transactions)
         top_customer = cls.get_top_customer(transactions)
+        metrics = "Some metrics data"  # Example metrics data
+        insights = "Some insights data"  # Example insights data
+        return cls.objects.create(
+            report_date=timezone.now(),
+            total_sales=total_sales,
+            total_expenses=total_expenses,
+            total_profit=total_profit,
+            top_selling_product=top_selling_product,
+            top_customer=top_customer,
+            metrics=metrics,
+            insights=insights
+        )
         
 class Shift(models.Model):
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='shifts')
     start_time = models.DateTimeField()
     end_time = models.DateTimeField(null=True, blank=True)
     total_sales = models.DecimalField(max_digits=10, decimal_places=2, default=0)
