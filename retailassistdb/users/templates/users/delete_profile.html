@@ -1,0 +1,15 @@
+{% extends 'users/base.html' %}
+{% block title %}Delete Profile{% endblock %}
+{% block header %}Delete Profile{% endblock %}
+{% block content %}
+<h1>Delete Profile</h1>
+
+<p>Are you sure you want to delete your profile? This action cannot be undone.</p>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-danger">Delete Profile</button>
+    <a href="{% url 'users:profile' %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

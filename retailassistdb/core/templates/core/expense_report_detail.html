@@ -1,0 +1,11 @@
+{% extends 'core/base.html' %}
+{% block title %}Expense Report Detail{% endblock %}
+{% block header %}Expense Report Detail{% endblock %}
+{% block content %}
+<h1>Expense Report Detail</h1>
+<p><strong>Report Date:</strong> {{ expense_report.report_date }}</p>
+<p><strong>Total Expenses:</strong> {{ expense_report.total_expenses }}</p>
+<p><strong>Details:</strong> {{ expense_report.details }}</p>
+<a href="{% url 'core:edit' model_name='expense_report' pk=expense_report.pk %}" class="btn btn-primary">Edit Expense Report</a>
+<a href="{% url 'core:list' model_name='expense_report' %}" class="btn btn-secondary">Back to Expense Report List</a>
+{% endblock %}

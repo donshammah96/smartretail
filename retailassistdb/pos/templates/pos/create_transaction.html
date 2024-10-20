@@ -1,0 +1,13 @@
+{% extends 'pos/base.html' %}
+{% block title %}Add Transaction{% endblock %}
+{% block header %}Add Transaction{% endblock %}
+{% block content %}
+<h1>Create Transaction</h1>
+<form method="post" action="{% url 'pos:add_transaction' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Create Transaction</button>
+</form>
+<a href="{% url 'pos:transaction_list' %}">View Transactions</a>
+<a href="{% url 'pos:dashboard' %}">Back to Dashboard</a>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'users/base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block header %}Dashboard{% endblock %}
+{% block content %}
+<h1>Welcome, {{ user.username }}!</h1>
+
+{% if user.role == 'admin' %}
+    <p>Welcome to the Admin Dashboard. Here you can manage all aspects of the system.</p>
+    <ul>
+        <li><a href="{% url 'users:admin_dashboard' %}">Admin Dashboard</a></li>
+        <li><a href="{% url 'users:employee_list' %}">Manage Employees</a></li>
+        <li><a href="{% url 'users:user_performance_report' %}">View Performance Reports</a></li>
+        <li><a href="{% url 'users:user_activity_report' %}">View Activity Reports</a></li>
+    </ul>
+{% elif user.role == 'manager' %}
+    <p>Welcome to the Manager Dashboard. Here you can manage your team and view reports.</p>
+    <ul>
+        <li><a href="{% url 'users:manager_dashboard' %}">Manager Dashboard</a></li>
+        <li><a href="{% url 'users:employee_list' %}">Manage Employees</a></li>
+        <li><a href="{% url 'users:user_performance_report' %}">View Performance Reports</a></li>
+        <li><a href="{% url 'users:user_activity_report' %}">View Activity Reports</a></li>
+    </ul>
+{% elif user.role == 'employee' %}
+    <p>Welcome to the Employee Dashboard. Here you can view your tasks and performance.</p>
+    <ul>
+        <li><a href="{% url 'users:employee_dashboard' %}">Employee Dashboard</a></li>
+        <li><a href="{% url 'users:profile' %}">View Profile</a></li>
+        <li><a href="{% url 'users:edit_profile' %}">Edit Profile</a></li>
+    </ul>
+{% else %}
+    <p>Welcome to the Dashboard. Please select an option below:</p>
+    <ul>
+        <li><a href="{% url 'users:profile' %}">View Profile</a></li>
+        <li><a href="{% url 'users:edit_profile' %}">Edit Profile</a></li>
+    </ul>
+{% endif %}
+
+<a href="{% url 'users:logout' %}" class="btn btn-danger">Logout</a>
+{% endblock %}

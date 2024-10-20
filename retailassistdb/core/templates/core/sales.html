@@ -8,6 +8,7 @@
         <li>{{ sale.id }} - {{ sale.date }}</li>
     {% endfor %}
 </ul>
-<a href="{% url 'core:add_sale' %}">Add Sale</a>
+<a href="{% url 'core:add' model_name='sale' %}">Add Sale</a>
 <a href="{% url 'core:dashboard' %}">Back to Dashboard</a>
+<script src="{% static 'js/dynamicList.js' %}"></script>
 {% endblock %}

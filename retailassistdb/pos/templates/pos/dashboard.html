@@ -1,0 +1,21 @@
+{% extends 'pos/base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block header %}Dashboard{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+<p>Welcome to the Retail Assist POS Dashboard!</p>
+<p>You have visited this page {{ visits }} times.</p>
+<ul>
+    <li><a href="{% url 'pos:list' model_name='transaction' %}"title="View and manage Transactions" >Transactions</a></li>
+    <li><a href="{% url 'pos:list' model_name='sale' %}" title="View and manage sales">Sales</a></li>
+    <li><a href="{% url 'pos:list' model_name='receipt' %}" title="View and manage receipts" >Receipts</a></li>
+    <li><a href="{% url 'pos:list' model_name='payment' %}"title="View and manage payments" >Payments</a></li>
+    <li><a href="{% url 'pos:list' model_name='return' %}"title="View and manage returns" >Returns</a></li>
+    <li><a href="{% url 'pos:list' model_name='refund' %}"title="View and manage refunds" >Refunds</a></li>
+    <li><a href="{% url 'pos:list' model_name='stock_alert' %}"title="View and manage stock alerts" >Stock Alerts</a></li>
+    <li><a href="{% url 'pos:list' model_name='sales_analytics' %}"title="View and manage sales analytics" >Sales Analytics</a></li>
+    <li><a href="{% url 'pos:list' model_name='customer_analytics' %}"title="View and manage customer analytics" >Customer Analytics</a></li>
+    <li><a href="{% url 'pos:list' model_name='discount' %}"title="View and manage discounts" >Discounts</a></li>
+    <li><a href="{% url 'pos:list' model_name='special_discount' %}"title="View and manage special discounts" >Special Discounts</a></li>
+</ul>
+{% endblock %}

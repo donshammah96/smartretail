@@ -2,25 +2,88 @@
 {% block title %}Dashboard{% endblock %}
 {% block header %}Dashboard{% endblock %}
 {% block content %}
-<h1>Dashboard</h1>
+<h1 id="welcomeMessage">Dashboard</h1>
 <p>Welcome to the Retail Assist Dashboard!</p>
-<p>You have visited this page {{ visits }} times.</p>
-<ul>
-    <li><a href="{% url 'core:data_analytics' %}">Data Analytics</a></li>
-    <li><a href="{% url 'core:revenue_report' %}">Revenue Report</a></li>
-    <li><a href="{% url 'core:expense_report' %}">Expense Report</a></li>
-    <li><a href="{% url 'core:product_list' %}">View Products</a></li>
-    <li><a href="{% url 'core:suppliers' %}">View Supliers</a></li>
-    <li><a href="{% url 'core:employees_list' %}">View Employees</a></li>
-    <li><a href="{% url 'core:stock' %}">View Stock</a></li>
-    <li><a href="{% url 'core:sales' %}">View Sales</a></li>
-    <li><a href="{% url 'core:add_product' %}">Add Product</a></li>
-    <li><a href="{% url 'core:add_supplier' %}">Add Supplier</a></li>
-    <li><a href="{% url 'core:add_sale' %}">Add Sale</a></li>
-    <li><a href="{% url 'core:update_stock' %}">Update Stock</a></li>
-    <li><a href="{% url 'core:customers_list' %}">View Customers</a></li>
-    <li><a href="{% url 'core:add_customer' %}">Add Customer</a></li>
-
-
+<p>You have visited this page <span id="visitCounter">{{ visits }}</span> times.</p>
+<ul id="navMenu">
+    <li><a href="{% url 'core:list' model_name='product' %}" title="View and manage products">Products</a></li>
+    <li><a href="{% url 'core:list' model_name='supplier' %}" title="View and manage suppliers">Suppliers</a></li>
+    <li><a href="{% url 'pos:list' model_name='stock' %}" title="View and manage stock">Stock</a></li>
+    <li><a href="{% url 'pos:list' model_name='sale' %}" title="View and manage sales">Sales</a></li>
+    <li><a href="{% url 'core:list' model_name='employee' %}" title="View and manage employees">Employees</a></li>
+    <li><a href="{% url 'core:list' model_name='customer' %}" title="View and manage customers">Customers</a></li>
+    <li><a href="{% url 'core:list' model_name='data_analytics' %}" title="View data analytics">Data Analytics</a></li>
+    <li><a href="{% url 'core:list' model_name='revenue_report' %}" title="View revenue report">Revenue Report</a></li>
+    <li><a href="{% url 'core:list' model_name='expense_report' %}" title="View expense report">Expense Report</a></li>
 </ul>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Welcome Message Animation
+        const welcomeMessage = document.getElementById('welcomeMessage');
+        welcomeMessage.style.opacity = 0;
+        setTimeout(() => {
+            welcomeMessage.style.transition = 'opacity 2s';
+            welcomeMessage.style.opacity = 1;
+        }, 100);
+
+        // Visit Counter Animation
+        const visitCounter = document.getElementById('visitCounter');
+        const visits = parseInt(visitCounter.textContent, 10);
+        let currentCount = 0;
+        const increment = Math.ceil(visits / 100);
+        const interval = setInterval(() => {
+            currentCount += increment;
+            if (currentCount >= visits) {
+                currentCount = visits;
+                clearInterval(interval);
+            }
+            visitCounter.textContent = currentCount;
+        }, 20);
+
+        // Interactive Navigation
+        const navMenu = document.getElementById('navMenu');
+        const links = navMenu.getElementsByTagName('a');
+        for (let link of links) {
+            link.addEventListener('click', function(event) {
+                for (let otherLink of links) {
+                    otherLink.classList.remove('active');
+                }
+                link.classList.add('active');
+            });
+        }
+
+        // Tooltips
+        for (let link of links) {
+            link.addEventListener('mouseover', function() {
+                const tooltip = document.createElement('div');
+                tooltip.className = 'tooltip';
+                tooltip.textContent = link.getAttribute('title');
+                document.body.appendChild(tooltip);
+                const rect = link.getBoundingClientRect();
+                tooltip.style.left = `${rect.left + window.scrollX}px`;
+                tooltip.style.top = `${rect.top + window.scrollY - tooltip.offsetHeight}px`;
+                link.addEventListener('mouseout', function() {
+                    document.body.removeChild(tooltip);
+                }, { once: true });
+            });
+        }
+    });
+</script>
+
+<style>
+    .tooltip {
+        position: absolute;
+        background-color: #333;
+        color: #fff;
+        padding: 5px;
+        border-radius: 3px;
+        font-size: 12px;
+        z-index: 1000;
+    }
+    .active {
+        font-weight: bold;
+        color: red;
+    }
+</style>
 {% endblock %}

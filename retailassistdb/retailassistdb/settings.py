@@ -12,9 +12,28 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
+# settings.py
+import os
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Add this to your URL configuration
+from django.conf import settings
+from django.conf.urls.static import static
+
+urlpatterns = [
+    # ... your other URL patterns
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# settings.py
+AUTH_USER_MODEL = 'users.CustomUser'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -33,6 +52,8 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     "core",
     "pos",
+    "users",
+    'phonenumber_field',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -77,8 +98,12 @@ WSGI_APPLICATION = "retailassistdb.wsgi.application"
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME':'retailassist_db',
+        'USER':'root',
+        'PASSWORD':'ComfortablePanda1693',
+        'HOST':'127.0.0.1',
+        'PORT':'3306',
     }
 }
 

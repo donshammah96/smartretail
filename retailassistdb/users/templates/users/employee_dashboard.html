@@ -1,0 +1,22 @@
+{% extends 'users/base.html' %}
+{% load static %}
+{% block title %}Employee Dashboard{% endblock %}
+{% block header %}Employee Dashboard{% endblock %}
+{% block content %}
+<h1>Employee Dashboard</h1>
+<p>Welcome to the Employee Dashboard. Here you can view your tasks and performance.</p>
+<ul>
+    <li><a href="{% url 'users:profile' %}" id="viewProfileLink">View Profile</a></li>
+    <li><a href="{% url 'users:edit_profile' %}" id="editProfileLink">Edit Profile</a></li>
+</ul>
+
+<!-- Placeholder for dynamic content -->
+<div id="dynamicContent"></div>
+
+<!-- Example chart -->
+<canvas id="performanceChart" width="400" height="200"></canvas>
+{% endblock %}
+{% block footer %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'js/employee_dashboard.js' %}"></script>
+{% endblock %}

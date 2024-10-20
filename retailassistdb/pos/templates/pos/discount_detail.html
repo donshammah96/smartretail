@@ -1,0 +1,10 @@
+{% extends 'pos/base.html' %}
+{% block title %}Discount Detail{% endblock %}
+{% block header %}Discount Detail{% endblock %}
+{% block content %}
+<h1>Discount Detail</h1>
+<p><strong>Name:</strong> {{ discount.name }}</p>
+<p><strong>Value:</strong> {{ discount.value }}</p>
+<a href="{% url 'pos:edit' model_name='discount' pk=discount.pk %}" class="btn btn-primary">Edit Discount</a>
+<a href="{% url 'pos:list' model_name='discount' %}" class="btn btn-secondary">Back to Discount List</a>
+{% endblock %}

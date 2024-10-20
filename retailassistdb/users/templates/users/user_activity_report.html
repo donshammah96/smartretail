@@ -1,0 +1,38 @@
+{% extends 'users/base.html' %}
+{% block title %}User Activity Report{% endblock %}
+{% block header %}User Activity Report{% endblock %}
+{% block content %}
+<h1>User Activity Report</h1>
+
+<!-- Example chart -->
+<canvas id="activityChart" width="400" height="200"></canvas>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Action</th>
+            <th>Timestamp</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for activity in activities %}
+        <tr>
+            <td>{{ activity.user.username }}</td>
+            <td>{{ activity.action }}</td>
+            <td>{{ activity.timestamp }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3">No activities found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{% url 'core:dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+{% endblock %}
+{% block footer %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'js/userActivityReport.js' %}"></script>
+{% endblock %}

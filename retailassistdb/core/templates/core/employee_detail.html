@@ -1,0 +1,16 @@
+{% extends 'core/base.html' %}
+{% block title %}Employee Detail{% endblock %}
+{% block header %}Employee Detail{% endblock %}
+{% block content %}
+<h1>Employee Detail</h1>
+<p><strong>Name:</strong> {{ employee.name }}</p>
+<p><strong>Position:</strong> {{ employee.position }}</p>
+<p><strong>Email:</strong> {{ employee.email }}</p>
+<p><strong>Phone:</strong> {{ employee.phone }}</p>
+<p><strong>Address:</strong> {{ employee.address }}</p>
+<p><strong>Hire Date:</strong> {{ employee.hire_date }}</p>
+<p><strong>Shift Schedule:</strong> {{ employee.shift_schedule }}</p>
+<a href="{% url 'core:shift_detail' employee_id=employee.pk %}" class="btn btn-info">View Shift Details</a>
+<a href="{% url 'core:edit' model_name='employee' pk=employee.pk %}" class="btn btn-primary">Edit Employee</a>
+<a href="{% url 'core:list' model_name='employee' %}" class="btn btn-secondary">Back to Employee List</a>
+{% endblock %}

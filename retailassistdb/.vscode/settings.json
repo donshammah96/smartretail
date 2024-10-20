@@ -6,12 +6,12 @@
                 "enableSsl": "Disabled"
             },
             "previewLimit": 50,
-            "server": "127.0.0.1",
+            "server": "localhost",
             "port": 3306,
             "driver": "MySQL",
-            "name": "retailassist",
-            "database": "retailassist_db",
-            "username": "root"
+            "name": "retailassistDB",
+            "username": "root",
+            "database": "retailassist_db"
         }
     ]
 }

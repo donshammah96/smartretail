@@ -1,0 +1,11 @@
+{% extends 'pos/base.html' %}
+{% block title %}Refund Detail{% endblock %}
+{% block header %}Refund Detail{% endblock %}
+{% block content %}
+<h1>Refund Detail</h1>
+<p><strong>Return Sale:</strong> {{ refund.return_sale }}</p>
+<p><strong>Amount:</strong> {{ refund.amount }}</p>
+<p><strong>Date:</strong> {{ refund.refund_date }}</p>
+<a href="{% url 'pos:edit' model_name='refund' pk=refund.pk %}" class="btn btn-primary">Edit Refund</a>
+<a href="{% url 'pos:list' model_name='refund' %}" class="btn btn-secondary">Back to Refund List</a>
+{% endblock %}

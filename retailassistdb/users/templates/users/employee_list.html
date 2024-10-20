@@ -1,0 +1,52 @@
+{% extends 'users/base.html' %}
+{% load static %}
+{% block title %}Employee List{% endblock %}
+{% block header %}Employee List{% endblock %}
+{% block content %}
+<h1>Employee List</h1>
+
+<!-- Link to add a new employee -->
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Position</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for employee in employees %}
+        <tr>
+            <td>{{ employee.username }}</td>
+            <td>{{ employee.email }}</td>
+            <td>{{ employee.first_name }}</td>
+            <td>{{ employee.last_name }}</td>
+            <td>{{ employee.employeeprofile.position }}</td>
+            <td>
+                <a href="{% url 'users:employee_profile' employee.pk %}" class="btn btn-info btn-sm">View Profile</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6">No employees found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Link to go back to the appropriate dashboard -->
+{% if user.role == 'admin' %}
+    <a href="{% url 'users:admin_dashboard' %}" class="btn btn-secondary">Back to Admin Dashboard</a>
+{% elif user.role == 'manager' %}
+    <a href="{% url 'users:manager_dashboard' %}" class="btn btn-secondary">Back to Manager Dashboard</a>
+{% elif user.role == 'employee' %}
+    <a href="{% url 'users:employee_dashboard' %}" class="btn btn-secondary">Back to Employee Dashboard</a>
+{% endif %}
+{% endblock %}
+{% block footer %}
+<script src="{% static 'js/searchSortPaginate.js' %}"></script>
+{% endblock %}

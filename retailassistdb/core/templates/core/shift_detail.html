@@ -1,0 +1,13 @@
+{% extends 'core/base.html' %}
+{% block title %}Shift Detail{% endblock %}
+{% block header %}Shift Detail{% endblock %}
+{% block content %}
+<h1>Shift Detail</h1>
+<p><strong>Employee:</strong> {{ shift.employee.name }}</p>
+<p><strong>Start Time:</strong> {{ shift.start_time }}</p>
+<p><strong>End Time:</strong> {{ shift.end_time }}</p>
+<p><strong>Total Sales:</strong> {{ shift.total_sales }}</p>
+<p><strong>Total Cash:</strong> {{ shift.total_cash }}</p>
+<a href="{% url 'core:edit' model_name='shift' pk=shift.pk %}" class="btn btn-primary">Edit Shift</a>
+<a href="{% url 'core:list' model_name='shift' %}" class="btn btn-secondary">Back to Shifts List</a>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'pos/base.html' %}
+{% load static %}
+{% block title %}Discount List{% endblock %}
+{% block header %}Discount List{% endblock %}
+{% block content %}
+<h1>Discount List</h1>
+
+<!-- Search Bar -->
+<input type="text" id="searchBar" placeholder="Search discounts..." onkeyup="filterItems()">
+
+<!-- Sort Options -->
+<select id="sortOptions" onchange="sortItems()">
+    <option value="valid_from">Sort by Valid From</option>
+    <option value="amount">Sort by Amount</option>
+</select>
+
+<ul id="itemList">
+    {% for discount in discounts %}
+        <li class="list-item">
+            <div class="item-details">
+                <p><strong>Name:</strong> {{ discount.name }}</p>
+                <p><strong>Amount:</strong> {{ discount.amount }}</p>
+                <p><strong>Valid From:</strong> {{ discount.valid_from }}</p>
+                <p><strong>Valid Until:</strong> {{ discount.valid_until }}</p>
+                <p><strong>Special Conditions:</strong> {{ discount.special_conditions }}</p>
+            </div>
+            <button class="toggle-button">Toggle Details</button>
+            <a href="{% url 'pos:edit' model_name='discount' pk=discount.id %}">Edit Discount</a>
+            <hr>
+        </li>
+    {% empty %}
+        <li>Discount list empty</li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'pos:add' model_name='discount' %}"class="btn btn-primary">Add Discount</a>
+<a href="{% url 'pos:dashboard' %}">Back to Dashboard</a>
+{% endblock %}
+{% block footer %}
+<script src="{% static 'js/dynamicList.js' %}"></script>
+{% endblock %}

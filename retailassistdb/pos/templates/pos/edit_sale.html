@@ -1,0 +1,12 @@
+{% extends 'pos/base.html' %}
+{% block title %}Edit Sale{% endblock %}
+{% block header %}Edit Sale{% endblock %}
+{% block content %}
+<h1>Edit Sale</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
+<a href="{% url 'pos:sale_list' %}" class="btn btn-secondary">Back to Sale List</a>
+{% endblock %}

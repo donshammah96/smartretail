@@ -1,0 +1,14 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Edit Product{% endblock %}
+{% block header %}Edit Product{% endblock %}
+{% block content %}
+<h1>Edit Product</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
+<a href="{% url 'pos:list' model_name='product' %}" class="btn btn-secondary">Back to Product List</a>
+<script src="{% static 'js/toggleVisibility.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'core/base.html' %}
+{% block title %}Revenue Report Detail{% endblock %}
+{% block header %}Revenue Report Detail{% endblock %}
+{% block content %}
+<h1>Revenue Report Detail</h1>
+<p><strong>Report Date:</strong> {{ revenue_report.report_date }}</p>
+<p><strong>Total Revenue:</strong> {{ revenue_report.total_revenue }}</p>
+<p><strong>Total Profit:</strong> {{ revenue_report.total_profit }}</p>
+<p><strong>Details:</strong> {{ revenue_report.details }}</p>
+<a href="{% url 'core:edit' model_name='revenue_report' pk=revenue_report.pk %}" class="btn btn-primary">Edit Revenue Report</a>
+<a href="{% url 'core:list' model_name='revenue_report' %}" class="btn btn-secondary">Back to Revenue Report List</a>
+{% endblock %}

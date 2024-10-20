@@ -1,0 +1,22 @@
+{% extends 'pos/base.html' %}
+{% load custom_filters %}
+{% block title %}{{ model_name|capfirst }} Detail{% endblock %}
+{% block header %}{{ model_name|capfirst }} Detail{% endblock %}
+{% block content %}
+<h1>{{ model_name|capfirst }} Detail</h1>
+
+<table class="table table-bordered">
+    {% for field in object._meta.fields %}
+    <tr>
+        <th>{{ field.verbose_name }}</th>
+        <td>{{ object|getattr:field.name }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<a href="{% url 'pos:list' model_name=model_name %}" class="btn btn-secondary">Back to {{ model_name|capfirst }} List</a>
+<a href="{% url 'pos:edit' model_name=model_name pk=object.pk %}" class="btn btn-warning">Edit {{ model_name|capfirst }}</a>
+{% endblock %}
+{% block footer %}
+<script src="{% static 'js/toggleDetails.js' %}"></script>
+{% endblock %}

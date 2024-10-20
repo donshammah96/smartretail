@@ -1,0 +1,39 @@
+{% extends 'pos/base.html' %}
+{% load static %}
+{% block title %}Stock Alerts{% endblock %}
+{% block header %}Stock Alerts{% endblock %}
+{% block content %}
+<h1>Stock Alert List</h1>
+
+<!-- Search Bar -->
+<input type="text" id="searchBar" placeholder="Search stock alerts..." onkeyup="filterItems()">
+
+<!-- Sort Options -->
+<select id="sortOptions" onchange="sortItems()">
+    <option value="product">Sort by Product</option>
+    <option value="quantity">Sort by Quantity</option>
+</select>
+
+<ul id="itemList">
+    {% for stock_alert in stock_alerts %}
+        <li class="list-item">
+            <div class="item-details">
+                <p><strong>Product:</strong> {{ stock_alert.product.name }}</p>
+                <p><strong>Threshold:</strong> {{ stock_alert.threshold }}</p>
+                <p><strong>Date:</strong> {{ stock_alert.date }}</p>
+            </div>
+            <button class="toggle-button">Toggle Details</button>
+            <a href="{% url 'pos:edit' model_name='stock_alert' pk=stock_alert.id %}">Edit Stock Alert</a>
+            <hr>
+        </li>
+    {% empty %}
+        <li>Stock alert list empty</li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'pos:add' model_name='stock_alert' %}"class="btn btn-primary">Add Stock Alert</a>
+<a href="{% url 'pos:dashboard' %}">Back to Dashboard</a>
+{% endblock %}
+{% block footer %}
+<script src="{% static 'js/dynamicList.js' %}"></script>
+{% endblock %}

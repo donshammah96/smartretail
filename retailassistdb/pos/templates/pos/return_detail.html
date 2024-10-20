@@ -1,0 +1,12 @@
+{% extends 'pos/base.html' %}
+{% block title %}Return Detail{% endblock %}
+{% block header %}Return Detail{% endblock %}
+{% block content %}
+<h1>Return Detail</h1>
+<p><strong>Product:</strong> {{ return.product }}</p>
+<p><strong>Quantity:</strong> {{ return.quantity }}</p>
+<p><strong>Reason:</strong> {{ return.reason }}</p>
+<p><strong>Date:</strong> {{ return.date }}</p>
+<a href="{% url 'pos:edit' model_name='return' pk=return.pk %}" class="btn btn-primary">Edit Return</a>
+<a href="{% url 'pos:list' model_name='return' %}" class="btn btn-secondary">Back to Return List</a>
+{% endblock %}

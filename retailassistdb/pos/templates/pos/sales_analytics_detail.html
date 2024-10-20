@@ -1,0 +1,12 @@
+{% extends 'pos/base.html' %}
+{% block title %}Sales Analytics Detail{% endblock %}
+{% block header %}Sales Analytics Detail{% endblock %}
+{% block content %}
+<h1>Sales Analytics Detail</h1>
+<p><strong>Product:</strong> {{ sales_analytics.product }}</p>
+<p><strong>Total Sales:</strong> {{ sales_analytics.total_sales }}</p>
+<p><strong>Revenue:</strong> {{ sales_analytics.revenue }}</p>
+<p><strong>Date Range:</strong> {{ sales_analytics.date_range }}</p>
+<a href="{% url 'pos:edit' model_name='sales_analytics' pk=sales_analytics.pk %}" class="btn btn-primary">Edit Sales Analytics</a>
+<a href="{% url 'pos:list' model_name='sales_analytics' %}" class="btn btn-secondary">Back to Sales Analytics List</a>
+{% endblock %}

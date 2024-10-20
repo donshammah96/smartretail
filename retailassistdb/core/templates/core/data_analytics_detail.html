@@ -1,0 +1,11 @@
+{% extends 'core/base.html' %}
+{% block title %}Data Analytics Detail{% endblock %}
+{% block header %}Data Analytics Detail{% endblock %}
+{% block content %}
+<h1>Data Analytics Detail</h1>
+<p><strong>Analysis Date:</strong> {{ data_analytics.report_date }}</p>
+<p><strong>Metrics:</strong> {{ data_analytics.metrics }}</p>
+<p><strong>Insights:</strong> {{ data_analytics.insights }}</p>
+<a href="{% url 'core:edit' model_name='data_analytics' pk=data_analytics.pk %}" class="btn btn-primary">Edit Data Analytics</a>
+<a href="{% url 'core:list' model_name='data_analytics' %}" class="btn btn-secondary">Back to Data Analytics List</a>
+{% endblock %}

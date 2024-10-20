@@ -1,0 +1,14 @@
+{% extends 'pos/base.html' %}
+{% block title %}Customer Analytics Detail{% endblock %}
+{% block header %}Customer Analytics Detail{% endblock %}
+{% block content %}
+<h1>Customer Analytics Detail</h1>
+<p><strong>Customer:</strong> {{ customer_analytics.customer }}</p>
+<p><strong>Date:</strong> {{ customer_analytics.report_date }}</p>
+<p><strong>Total Purchases:</strong> {{ customer_analytics.total_purchases }}</p>
+<p><strong>Total Spent:</strong> {{ customer_analytics.total_spent }}</p>
+<p><strong>Loyalty Points Earned:</strong> {{ customer_analytics.loyalty_points_earned }}</p>
+<p><strong>Loyalty Points Redeemed:</strong> {{ customer_analytics.loyalty_points_redeemed }}</p>
+<a href="{% url 'pos:edit' model_name='customer_analytics' pk=customer_analytics.pk %}" class="btn btn-primary">Edit Customer Analytics</a>
+<a href="{% url 'pos:list' model_name='customer_analytics' %}" class="btn btn-secondary">Back to Customer Analytics List</a>
+{% endblock %}

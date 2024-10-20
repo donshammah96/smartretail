@@ -1,0 +1,54 @@
+{% extends 'pos/base.html' %}
+{% load static %}
+{% block title %}Inventory Detail{% endblock %}
+{% block content %}
+<h1>Inventory Detail for {{ inventory.product.name }}</h1>
+<table class="table table-bordered">
+    <tr>
+        <th>Product</th>
+        <td>{{ inventory.product.name }}</td>
+    </tr>
+    <tr>
+        <th>Initial Stock</th>
+        <td>{{ inventory.initial_stock }}</td>
+    </tr>
+    <tr>
+        <th>Current Stock</th>
+        <td>{{ inventory.current_stock }}</td>
+    </tr>
+    <tr>
+        <th>Reorder Level</th>
+        <td>{{ inventory.reorder_level }}</td>
+    </tr>
+    <tr>
+        <th>Last Updated</th>
+        <td>{{ inventory.last_updated }}</td>
+    </tr>
+    <tr>
+        <th>Created At</th>
+        <td>{{ inventory.created_at }}</td>
+    </tr>
+</table>
+<h2>Adjustment History</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Adjustment</th>
+            <th>Reason</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for adjustment in inventory.adjustments.all %}
+        <tr>
+            <td>{{ adjustment.adjustment }}</td>
+            <td>{{ adjustment.reason }}</td>
+            <td>{{ adjustment.adjustment_date }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'pos:list' model_name='inventory' %}" class="btn btn-secondary">Back to Inventory List</a>
+<a href="{% url 'pos:edit' model_name='inventory_adjustment' pk=inventory.id %}" class="btn btn-warning">Adjust Stock</a>
+<script src="{% static 'js/dynamicList.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'core/base.html' %}
+{% block title %}Product Detail{% endblock %}
+{% block header %}Product Detail{% endblock %}
+{% block content %}
+<h1>Product Detail</h1>
+<p><strong>Name:</strong> {{ product.name }}</p>
+<p><strong>Price:</strong> {{ product.price }}</p>
+<p><strong>Description:</strong> {{ product.description }}</p>
+<p><strong>Category:</strong> {{ product.category }}</p>
+<p><strong>Stock:</strong> <span class="stock">{{ product.stock }}</span> <button class="btn btn-sm btn-primary update-stock">Update Stock</button></p>
+<p><strong>Supplier ID:</strong> <a href="{% url 'core:supplier_detail' product.supplier_id %}">{{ product.supplier_id }}</a></p>
+<p><strong>Low Stock Threshold:</strong> {{ product.low_stock_threshold }}</p>
+<p><strong>Last Restock Date:</strong> {{ product.last_restock_date }}</p>
+<p><strong>Expiration Date:</strong> {{ product.expiration_date }}</p>
+<a href="{% url 'core:edit' model_name='product' pk=product.pk %}" class="btn btn-primary">Edit Product</a>
+<a href="{% url 'core:list' model_name='product' %}" class="btn btn-secondary">Back to Product List</a>
+{% endblock %}

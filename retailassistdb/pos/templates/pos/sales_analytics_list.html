@@ -1,0 +1,40 @@
+{% extends 'pos/base.html' %}
+{% load static %}
+{% block title %}Sales Analytics{% endblock %}
+{% block header %}Sales Analytics{% endblock %}
+{% block content %}
+<h1>Sales Analytics</h1>
+
+<!-- Search Bar -->
+<input type="text" id="searchBar" placeholder="Search sales analytics..." onkeyup="filterItems()">
+
+<!-- Sort Options -->
+<select id="sortOptions" onchange="sortItems()">
+    <option value="report_date">Sort by Report Date</option>
+    <option value="total_sales_value">Sort by Total Sales Value</option>
+</select>
+
+<ul id="itemList">
+    {% for analytics in sales_analytics %}
+        <li class="list-item">
+            <div class="item-details">
+                <p><strong>Report Date:</strong> {{ analytics.report_date }}</p>
+                <p><strong>Total Sales Value:</strong> {{ analytics.total_sales_value }}</p>
+                <p><strong>Top Selling Product:</strong> {{ analytics.top_selling_product.name }}</p>
+                <p><strong>Number of Transactions:</strong> {{ analytics.num_transactions }}</p>
+            </div>
+            <button class="toggle-button">Toggle Details</button>
+            <a href="{% url 'pos:edit' model_name='sales_analytics' pk=analytics.id %}">Edit Sales Analytics</a>
+            <hr>
+        </li>
+    {% empty %}
+        <li>Sales analytics list empty</li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'pos:add' model_name='sales_analytics' %}"class="btn btn-primary">Add Sales Analytics</a>
+<a href="{% url 'pos:dashboard' %}">Back to Dashboard</a>
+{% endblock %}
+{% block footer %}
+<script src="{% static 'js/dynamicList.js' %}"></script>
+{% endblock %}
