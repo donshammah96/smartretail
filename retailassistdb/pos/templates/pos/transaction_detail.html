@@ -1,0 +1,22 @@
+{% extends 'pos/base.html' %}
+{% block title %}Transaction Detail{% endblock %}
+{% block header %}Transaction Detail{% endblock %}
+{% block content %}
+<h1>Transaction Details</h1>
+<p><strong>Transaction ID:</strong> {{ transaction.id }}</p>
+<p><strong>Date:</strong> {{ transaction.date }}</p>
+<p><strong>Amount:</strong> {{ transaction.amount }}</p>
+<p><strong>Payment Method:</strong> {{ transaction.payment_method }}</p>
+<p><strong>Customer:</strong> {{ transaction.customer }}</p>
+<p><strong>Points Earned: </strong> {{ transaction.points_earned }}</p>
+<p><strong>Employee ID:</strong> {{ transaction.employee.id }}</p>
+<p><strong>Items:</strong></p>
+<ul>
+    {% for item in transaction.items.all %}
+        <li>{{ item.product.name }} - Quantity: {{ item.quantity }} - Price: {{ item.price }}</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'pos:edit' model_name='transaction' pk=transaction.pk %}" class="btn btn-primary">Edit Transaction</a>
+<a href="{% url 'pos:list' model_name='transaction' %}" class="btn btn-secondary">Back to Transactions</a>
+<a href="{% url 'pos:dashboard' %}">Back to Dashboard</a>
+{% endblock %}

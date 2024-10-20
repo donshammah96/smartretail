@@ -1,0 +1,13 @@
+{% extends 'core/base.html' %}
+{% block title %}Supplier Detail{% endblock %}
+{% block header %}Supplier Detail{% endblock %}
+{% block content %}
+<h1>Supplier Detail</h1>
+<p><strong>Name:</strong> {{ supplier.name }}</p>
+<p><strong>Contact Person:</strong> {{ supplier.contact_person }}</p>
+<p><strong>Phone:</strong> {{ supplier.phone }}</p>
+<p><strong>Email:</strong> {{ supplier.email }}</p>
+<p><strong>Delivery Times:</strong> {{ supplier.delivery_times }}</p>
+<a href="{% url 'core:suppliers' %}">Back to Suppliers</a>
+<a href="{% url 'core:dashboard' %}">Dashboard</a>
+{% endblock %}

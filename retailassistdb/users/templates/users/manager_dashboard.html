@@ -1,0 +1,23 @@
+{% extends 'users/base.html' %}
+{% load static %}
+{% block title %}Manager Dashboard{% endblock %}
+{% block header %}Manager Dashboard{% endblock %}
+{% block content %}
+<h1>Manager Dashboard</h1>
+<p>Welcome to the Manager Dashboard. Here you can manage your team and view reports.</p>
+<ul>
+    <li><a href="{% url 'users:employee_list' %}" id="manageEmployeesLink">Manage Employees</a></li>
+    <li><a href="{% url 'users:user_performance_report' %}" id="performanceReportLink">View Performance Reports</a></li>
+    <li><a href="{% url 'users:user_activity_report' %}" id="activityReportLink">View Activity Reports</a></li>
+</ul>
+
+<!-- Placeholder for dynamic content -->
+<div id="dynamicContent"></div>
+
+<!-- Example chart -->
+<canvas id="performanceChart" width="400" height="200"></canvas>
+{% endblock %}
+{% block footer %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'js/dashboard.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'core/base.html' %}
+{% block title %}Edit Data Analytics{% endblock %}
+{% block header %}Edit Data Analytics{% endblock %}
+{% block content %}
+<h1>Edit Data Analytics</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
+<a href="{% url 'core:data_analytics_list' %}" class="btn btn-secondary">Back to Data Analytics List</a>
+{% endblock %}

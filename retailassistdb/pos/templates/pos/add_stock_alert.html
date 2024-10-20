@@ -1,0 +1,12 @@
+{% extends 'pos/base.html' %}
+{% block title %}Add Stock Alert{% endblock %}
+{% block header %}Add Stock Alert{% endblock %}
+{% block content %}
+<h1>Add Stock Alert</h1>
+<form method="post" action="{% url 'pos:add_stock_alert' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Add Stock Alert</button>
+</form>
+<a href="{% url 'pos:dashboard' %}">Back to Dashboard</a>
+{% endblock %}

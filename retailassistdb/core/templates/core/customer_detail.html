@@ -1,0 +1,13 @@
+{% extends 'core/base.html' %}
+{% block title %}Customer Detail{% endblock %}
+{% block header %}Customer Detail{% endblock %}
+{% block content %}
+<h1>Customer Detail</h1>
+<p><strong>Name:</strong> {{ customer.name }}</p>
+<p><strong>Email:</strong> {{ customer.email }}</p>
+<p><strong>Phone:</strong> {{ customer.phone }}</p>
+<p><strong>Address:</strong> {{ customer.address }}</p>
+<p><strong>Joined Date:</strong> {{ customer.joined_date }}</p>
+<a href="{% url 'core:edit' model_name='customer' pk=customer.pk %}" class="btn btn-primary">Edit Customer</a>
+<a href="{% url 'core:list' model_name='customer' %}" class="btn btn-secondary">Back to Customer List</a>
+{% endblock %}

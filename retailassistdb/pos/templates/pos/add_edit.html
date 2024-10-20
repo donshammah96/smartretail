@@ -1,0 +1,16 @@
+{% extends 'pos/base.html' %}
+{% block title %}{{ model_name|capfirst }}{% if is_edit %} Edit{% else %} Add{% endif %}{% endblock %}
+{% block header %}{{ model_name|capfirst }}{% if is_edit %} Edit{% else %} Add{% endif %}{% endblock %}
+{% block content %}
+<h1>{{ model_name|capfirst }}{% if is_edit %} Edit{% else %} Add{% endif %}</h1>
+<form method="post" action="{% url 'pos:add' model_name=model_name %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">{% if is_edit %}Save Changes{% else %}Add {{ model_name|capfirst }}{% endif %}</button>
+</form>
+<div id="formErrors" class="alert alert-danger" style="display: none;"></div>
+<a href="{% url 'pos:list' model_name=model_name %}" class="btn btn-secondary">Back to {{ model_name|capfirst }} List</a>
+{% endblock %}
+{% block footer %}
+<script src="{% static 'js/formValidation.js' %}"></script>
+{% endblock %}

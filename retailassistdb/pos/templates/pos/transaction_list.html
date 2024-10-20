@@ -1,0 +1,36 @@
+{% extends 'pos/base.html' %}
+{% load static %}
+{% block title %}Transaction list{% endblock %}
+{% block header %}Transaction list{% endblock %}
+{% block content %}
+<h1>Transaction List</h1>
+
+<ul id="itemList">
+    {% for transaction in transactions %}
+        <li class="list-item">
+            <div class="item-detail">
+                <p><strong>ID:</strong> {{ transaction.id }}</p>
+                <p><strong>Date:</strong> {{ transaction.date }}</p>
+                <p><strong>Items:</strong> 
+                    {% for item in transaction.items.all %}
+                        {{ item.name }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </p>
+                <p><strong>Amount:</strong> {{ transaction.amount }}</p>
+                <p><strong>Customer ID:</strong> {{ transaction.customer.id }}</p>
+                <p><strong>Employee ID:</strong> {{ transaction.employee.id }}</p>
+                <p><strong>Payment Method:</strong> {{ transaction.payment_method.method }}</p>
+            </div>
+            <button class="toggle-button">Toggle Details</button>
+            <a href="{% url 'pos:edit' model_name='transaction' pk=transaction.id %}"class="btn btn-secondary">Edit Transaction</a>
+            <hr>
+        </li>
+    {% empty %}
+        <li>No transactions to display!</li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'pos:add' model_name='transaction' %}" class="btn btn-primary">Add Transaction</a>
+<a href="{% url 'pos:dashboard' %}"class="btn btn-secondary">Back to Dashboard</a>
+<script src="{% static 'js/dynamicList.js' %}"></script>
+{% endblock %}

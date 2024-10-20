@@ -1,0 +1,54 @@
+{% extends 'users/base.html' %}
+{% block title %}Employee Profile{% endblock %}
+{% block header %}Employee Profile{% endblock %}
+{% block content %}
+<h1>Employee Profile</h1>
+<div class="profile-info">
+    <h2>Profile Information</h2>
+    <table class="table table-bordered">
+        <tr>
+            <th>Username</th>
+            <td>{{ employee.username }}</td>
+        </tr>
+        <tr>
+            <th>Email</th>
+            <td>{{ employee.email }}</td>
+        </tr>
+        <tr>
+            <th>First Name</th>
+            <td>{{ employee.first_name }}</td>
+        </tr>
+        <tr>
+            <th>Last Name</th>
+            <td>{{ employee.last_name }}</td>
+        </tr>
+        <tr>
+            <th>Position</th>
+            <td>{{ profile.position }}</td>
+        </tr>
+        <tr>
+            <th>Contact Information</th>
+            <td>{{ profile.contact_info }}</td>
+        </tr>
+        <tr>
+            <th>Performance Metrics</th>
+            <td>
+                <canvas id="performanceChart" width="400" height="200"></canvas>
+            </td>
+        </tr>
+        <tr>
+            <th>Sales History</th>
+            <td>{{ profile.sales_history }}</td>
+        </tr>
+        <tr>
+            <th>Assigned Shifts</th>
+            <td>{{ profile.assigned_shifts }}</td>
+        </tr>
+    </table>
+</div>
+<a href="{% url 'users:employee_list' %}" class="btn btn-secondary">Back to Employee List</a>
+{% endblock %}
+{% block footer %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'js/employeeProfile.js' %}"></script>
+{% endblock %}

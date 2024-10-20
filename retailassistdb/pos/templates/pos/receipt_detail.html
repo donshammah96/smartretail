@@ -1,0 +1,12 @@
+{% extends 'pos/base.html' %}
+{% block title %}Receipt Detail{% endblock %}
+{% block header %}Receipt Detail{% endblock %}
+{% block content %}
+<h1>Receipt Detail</h1>
+<p><strong>Sale:</strong> {{ receipt.sale }}</p>
+<p><strong>Receipt Number:</strong> {{ receipt.receipt_number }}</p>
+<p><strong>Amount:</strong> {{ receipt.amount }}</p>
+<p><strong>Date:</strong> {{ receipt.issued_date }}</p>
+<a href="{% url 'pos:edit' model_name='receipt' pk=receipt.pk %}" class="btn btn-primary">Edit Receipt</a>
+<a href="{% url 'pos:list' model_name='receipt' %}" class="btn btn-secondary">Back to Receipt List</a>
+{% endblock %}

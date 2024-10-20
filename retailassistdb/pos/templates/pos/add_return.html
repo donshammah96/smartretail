@@ -1,0 +1,12 @@
+{% extends 'pos/base.html' %}
+{% block title %}Add Return{% endblock %}
+{% block header %}Add Return{% endblock %}
+{% block content %}
+<h1>Add Return</h1>
+<form method="post" action="{% url 'pos:add_return' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Add Return</button>
+</form>
+<a href="{% url 'pos:dashboard' %}">Back to Dashboard</a>
+{% endblock %}

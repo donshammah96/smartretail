@@ -1,0 +1,12 @@
+{% extends 'pos/base.html' %}
+{% block title %}Payment Detail{% endblock %}
+{% block header %}Payment Detail{% endblock %}
+{% block content %}
+<h1>Payment Detail</h1>
+<p><strong>Sale:</strong> {{ payment.sale }}</p>
+<p><strong>Amount:</strong> {{ payment.amount }}</p>
+<p><strong>Method:</strong> {{ payment.method }}</p>
+<p><strong>Date:</strong> {{ payment.payment_date }}</p>
+<a href="{% url 'pos:edit' model_name='payment' pk=payment.pk %}" class="btn btn-primary">Edit Payment</a>
+<a href="{% url 'pos:list' model_name='payment' %}" class="btn btn-secondary">Back to Payment List</a>
+{% endblock %}

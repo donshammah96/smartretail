@@ -1,0 +1,12 @@
+{% extends 'pos/base.html' %}
+{% block title %}Add Receipt{% endblock %}
+{% block header %}Add Receipt{% endblock %}
+{% block content %}
+<h1>Add Receipt</h1>
+<form method="post" action="{% url 'pos:add_receipt' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Add Receipt</button>
+</form>
+<a href="{% url 'pos:dashboard' %}">Back to Dashboard</a>
+{% endblock %}

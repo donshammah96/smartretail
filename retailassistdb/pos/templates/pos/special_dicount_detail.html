@@ -1,0 +1,13 @@
+{% extends 'pos/base.html' %}
+{% block title %}Special Discount Detail{% endblock %}
+{% block header %}Special Discount Detail{% endblock %}
+{% block content %}
+<h1>Special Discount Detail</h1>
+<p><strong>Name:</strong> {{ special_discount.name }}</p>
+<p><strong>Value %:</strong> {{ special_discount.discount_percent }}</p>
+<p><strong>End Date:</strong> {{ special_discount.valid_until }}</p>
+<p><strong>Special Conditions:</strong> {{ special_discount.special_conditions }}</p>
+
+<a href="{% url 'pos:edit' model_name='special_discount' pk=special_discount.pk %}" class="btn btn-primary">Edit Special Discount</a>
+<a href="{% url 'pos:list' model_name='special_discount' %}" class="btn btn-secondary">Back to Special Discount List</a>
+{% endblock %}

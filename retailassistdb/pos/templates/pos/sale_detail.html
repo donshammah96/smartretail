@@ -1,0 +1,12 @@
+{% extends 'pos/base.html' %}
+{% block title %}Sale Detail{% endblock %}
+{% block header %}Sale Detail{% endblock %}
+{% block content %}
+<h1>Sale Detail</h1>
+<p><strong>Product:</strong> {{ sale.product }}</p>
+<p><strong>Quantity:</strong> {{ sale.quantity }}</p>
+<p><strong>Total Price:</strong> {{ sale.total_price }}</p>
+<p><strong>Date:</strong> {{ sale.date }}</p>
+<a href="{% url 'pos:edit' model_name='sale' pk=sale.pk %}" class="btn btn-primary">Edit Sale</a>
+<a href="{% url 'pos:list' model_name='sale' %}" class="btn btn-secondary">Back to Sale List</a>
+{% endblock %}

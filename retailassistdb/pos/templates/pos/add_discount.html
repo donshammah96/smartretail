@@ -1,0 +1,12 @@
+{% extends 'pos/base.html' %}
+{% block title %}Add Discount{% endblock %}
+{% block header %}Add Discount{% endblock %}
+{% block content %}
+<h1>Add Discount</h1>
+<form method="post" action="{% url 'pos:add_discount' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Add Discount</button>
+</form>
+<a href="{% url 'pos:dashboard' %}">Back to Dashboard</a>
+{% endblock %}

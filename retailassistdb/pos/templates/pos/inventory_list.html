@@ -1,0 +1,30 @@
+{% extends 'pos/base.html' %}
+{% load static %}
+{% block title %}Inventory List{% endblock %}
+{% block header %}Inventory List{% endblock %}
+{% block content %}
+<h1>Inventory List</h1>
+
+<ul id="itemList">
+    {% for inventory in inventories %}
+        <li class="list-item">
+            <div class="item-detail">
+                <p><strong>Product:</strong> {{ inventory.product.name }}</p>
+                <p><strong>Initial Stock:</strong> {{ inventory.initial_stock }}</p>
+                <p><strong>Current Stock:</strong> {{ inventory.current_stock }}</p>
+                <p><strong>Reorder Level:</strong> {{ inventory.reorder_level }}</p>
+                <p><strong>Last Updated:</strong> {{ inventory.last_updated }}</p>
+            </div>
+            <button class="toggle-button">Toggle Details</button>
+            <a href="{% url 'pos:edit' model_name='inventory' pk=inventory.id %}">Edit Inventory</a>
+            <hr>
+        </li>
+    {% empty %}
+        <li>No inventories to display!</li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'pos:add' model_name='inventory' %}" class="btn btn-primary">Add Inventory</a>
+<a href="{% url 'pos:dashboard' %}"class="btn btn-secondary">Back to Dashboard</a>
+<script src="{% static 'js/dynamicList.js' %}"></script>
+{% endblock %}

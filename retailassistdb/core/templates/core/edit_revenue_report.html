@@ -1,0 +1,12 @@
+{% extends 'core/base.html' %}
+{% block title %}Edit Revenue Report{% endblock %}
+{% block header %}Edit Revenue Report{% endblock %}
+{% block content %}
+<h1>Edit Revenue Report</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
+<a href="{% url 'core:revenue_report_list' %}" class="btn btn-secondary">Back to Revenue Report List</a>
+{% endblock %}

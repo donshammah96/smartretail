@@ -1,0 +1,61 @@
+{% extends 'users/base.html' %}
+{% block title %}User Performance Report{% endblock %}
+{% block header %}User Performance Report{% endblock %}
+{% block content %}
+<h1>User Performance Report</h1>
+
+<!-- Example chart -->
+<canvas id="performanceChart" width="400" height="200"></canvas>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Total Sales</th>
+            <th>Average Transaction Value</th>
+            <th>Performance Score</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for employee in page_obj %}
+        <tr>
+            <td>{{ employee.username }}</td>
+            <td>{{ employee.email }}</td>
+            <td>{{ employee.total_sales }}</td>
+            <td>{{ employee.average_transaction_value }}</td>
+            <td>{{ employee.performance_score }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">No employees found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Pagination Controls -->
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+
+<a href="{% url 'core:dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+{% endblock %}
+{% block footer %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'js/userPerformanceReport.js' %}"></script>
+{% endblock %}
