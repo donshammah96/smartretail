@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 
 app_name = 'core'
@@ -11,4 +11,6 @@ urlpatterns = [
     path('<str:model_name>/detail/<int:pk>/', views.generic_detail_view, name='detail'),
     path('about/', views.about_view, name='about'),
     path('contact/', views.contact_view, name='contact'),
+    path('pos/', include('pos.urls')),
+    path('users/', include('users.urls')),
 ]

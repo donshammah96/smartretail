@@ -23,6 +23,7 @@
         <li class="product-item">
             <div class="product-details">
                 <p><strong>Product Name:</strong> {{ product.name }}</p>
+                <p><strong>Category:</strong> {{ product.category.name }}</p>
                 <p><strong>SKU:</strong> {{ product.sku }}</p>
                 <p><strong>Price:</strong> {{ product.price }}</p>
                 <p><strong>Stock:</strong> <span class="stock">{{ product.stock }}</span> <button class="btn btn-sm btn-primary update-stock">Update Stock</button></p>
@@ -33,6 +34,8 @@
                 <p><strong>Expiration Date:</strong> {{ product.expiration_date }}</p>
                 <p><strong>Restock Date:</strong> {{ product.restock_date }}</p>
             </div>
+            <button class="toggle-button">Toggle Details</button>
+            <a href="{% url 'core:edit' model_name='product' pk=product.id %}">Edit Product</a>
             <hr>
         </li>
     {% empty %}

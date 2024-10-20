@@ -1,10 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django import forms
-from .models import Employee, Supplier, Product, Customer, RevenueReport, ExpenseReport, DataAnalytics, Shift 
+from pos.models import Sale, Payment, Transaction
+from .models import Employee, Supplier, Product, Customer, RevenueReport, ExpenseReport, DataAnalytics, Shift , Category
 from .forms import (
-    ProductForm, SupplierForm, EmployeeForm, CustomerForm, RevenueReportForm, ExpenseReportForm, DataAnalyticsForm, ShiftForm, EditProductForm, EditSupplierForm, EditCustomerForm, EditEmployeeForm, EditRevenueReportForm, EditExpenseReportForm, EditDataAnalyticsForm, AddSaleForm, AddCustomerForm, AddProductForm, AddEmployeeForm, AddSupplierForm, AddExpenseForm, AddRevenueForm, AddDataAnalyticsForm, EditDataAnalyticsForm
+    ProductForm, SupplierForm, EmployeeForm, CustomerForm, RevenueReportForm, ExpenseReportForm, DataAnalyticsForm, ShiftForm, EditProductForm, EditSupplierForm, EditCustomerForm, EditEmployeeForm, EditRevenueReportForm, EditExpenseReportForm, EditDataAnalyticsForm, AddSaleForm, AddCustomerForm, AddProductForm, AddEmployeeForm, AddSupplierForm, AddExpenseForm, AddRevenueForm, AddDataAnalyticsForm, EditDataAnalyticsForm, CategoryForm
 )
 
 MODEL_FORM_MAPPING = {
@@ -20,6 +21,7 @@ MODEL_FORM_MAPPING = {
 
 MODEL_TEMPLATE_MAPPING = {
     'product': (Product, 'core/product_list.html', 'core/product_detail.html'),
+    'category': (Category, 'core/category_list.html', 'core/category_detail.html'),
     'supplier': (Supplier, 'core/suppliers.html', 'core/supplier_detail.html'),
     'revenue_report': (RevenueReport, 'core/revenue_report.html', 'core/revenue_report_detail.html'),
     'expense_report': (ExpenseReport, 'core/expense_report.html', 'core/expense_report_detail.html'),
@@ -27,6 +29,7 @@ MODEL_TEMPLATE_MAPPING = {
     'customer': (Customer, 'core/customers_list.html', 'core/customer_detail.html'),
     'employee': (Employee, 'core/employees_list.html', 'core/employee_detail.html'),
     'shift': (Shift, 'core/shifts_list.html', 'core/shift_detail.html'),
+    'sale': (Sale, 'pos/sale_list.html', 'pos/sale_detail.html'),
 }
 
 def index(request):
@@ -49,7 +52,12 @@ def add_view(request, model_name):
         form = form_class(request.POST)
         if form.is_valid():
             form.save()
+            if request.is_ajax():
+                return JsonResponse({'success': True})
             return redirect(reverse(f'core:{model_name}_list'))
+        else:
+            if request.is_ajax():
+                return JsonResponse({'success': False, 'errors': form.errors})
     else:
         form = form_class()
 
@@ -67,7 +75,12 @@ def edit_view(request, model_name, pk):
         form = form_class(request.POST, instance=instance)
         if form.is_valid():
             form.save()
+            if request.is_ajax():
+                return JsonResponse({'success': True})
             return redirect(reverse(f'core:{model_name}_list'))
+        else:
+            if request.is_ajax():
+                return JsonResponse({'success': False, 'errors': form.errors})
     else:
         form = form_class(instance=instance)
 

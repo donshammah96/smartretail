@@ -1,9 +1,44 @@
 {% extends 'core/base.html' %}
+{% load static %}
 {% block title %}Data Analytics{% endblock %}
 {% block header %}Data Analytics{% endblock %}
 {% block content %}
 <h1>Data Analytics</h1>
-<p>Here you can view data analytics.</p>
-<!-- Add your data analytics content here -->
+
+<!-- Search Bar -->
+<input type="text" id="searchBar" placeholder="Search reports..." onkeyup="filterItems()">
+
+<!-- Sort Options -->
+<select id="sortOptions" onchange="sortItems()">
+    <option value="report_date">Sort by Report Date</option>
+    <option value="total_sales">Sort by Total Sales</option>
+    <option value="total_profit">Sort by Total Profit</option>
+</select>
+
+<ul id="itemList">
+    {% for report in data_analytics %}
+        <li class="list-item">
+            <div class="item-details">
+                <p><strong>Report Date:</strong> {{ report.report_date }}</p>
+                <p><strong>Total Sales:</strong> {{ report.total_sales }}</p>
+                <p><strong>Total Expenses:</strong> {{ report.total_expenses }}</p>
+                <p><strong>Total Profit:</strong> {{ report.total_profit }}</p>
+                <p><strong>Top Selling Product:</strong> {{ report.top_selling_product.name }}</p>
+                <p><strong>Top Customer:</strong> {{ report.top_customer.name }}</p>
+                <p><strong>Metrics:</strong> {{ report.metrics }}</p>
+                <p><strong>Insights:</strong> {{ report.insights }}</p>
+            </div>
+            <button class="toggle-button">Toggle Details</button>
+            <a href="{% url 'core:edit' model_name='data_analytics' pk=report.id %}">Edit Data Analytics</a>
+            <hr>
+        </li>
+    {% empty %}
+        <li>Data analytics list empty</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'core:add' model_name='data_analytics' %}" class="btn btn-primary">Add Data Analytics</a>
 <a href="{% url 'core:dashboard' %}">Back to Dashboard</a>
+{% endblock %}
+{% block footer %}
+<script src="{% static 'js/dynamicList.js' %}"></script>
 {% endblock %}

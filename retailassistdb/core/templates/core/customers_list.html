@@ -1,13 +1,37 @@
 {% extends 'core/base.html' %}
+{% load static %}
 {% block title %}Customer List{% endblock %}
 {% block header %}Customer List{% endblock %}
 {% block content %}
 <h1>Customer List</h1>
-<ul>
+
+<!-- Search Bar -->
+<input type="text" id="searchBar" placeholder="Search customers..." onkeyup="filterItems()">
+
+<!-- Sort Options -->
+<select id="sortOptions" onchange="sortItems()">
+    <option value="name">Sort by Name</option>
+    <option value="email">Sort by Email</option>
+</select>
+
+<ul id="itemList">
     {% for customer in customers %}
-        <li>{{ customer.name }}</li>
+        <li class="list-item">
+            <div class="item-details">
+                <p><strong>Name:</strong> {{ customer.name }}</p>
+                <p><strong>Email:</strong> {{ customer.email }}</p>
+                <p><strong>Phone:</strong> {{ customer.phone }}</p>
+                <p><strong>Address:</strong> {{ customer.address }}</p>
+                <p><strong>Joined Date:</strong> {{ customer.joined_date }}</p>
+            </div>
+            <button class="toggle-button">Hide Details</button>
+            <a href="{% url 'core:edit' model_name='customer' pk=customer.id %}">Edit Customer</a>
+            <hr>
+        </li>
     {% endfor %}
 </ul>
-<a href="{% url 'core:add' model_name='customer' %}">Add Customer</a>
+
+<a href="{% url 'core:add' model_name='customer' %}"class="btn btn-primary">Add Customer</a>
 <a href="{% url 'core:dashboard' %}">Back to Dashboard</a>
+<script src="{% static 'js/dynamicList.js' %}"></script>
 {% endblock %}

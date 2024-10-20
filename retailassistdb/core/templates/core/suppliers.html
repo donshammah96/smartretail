@@ -1,11 +1,22 @@
 {% extends 'core/base.html' %}
+{% load static %}
 {% block title %}Suppliers List{% endblock %}
 {% block header %}Suppliers List{% endblock %}
 {% block content %}
 <h1>Suppliers List</h1>
-<ul>
+
+<!-- Search Bar -->
+<input type="text" id="searchBar" placeholder="Search suppliers by name..." onkeyup="filterSuppliers()">
+
+<!-- Sort Options -->
+<select id="sortOptions" onchange="sortSuppliers()">
+    <option value="name">Sort by Name</option>
+    <option value="address">Sort by Address</option>
+</select>
+
+<ul id="supplierList">
     {% for supplier in suppliers %}
-        <li>
+        <li class="supplier-item">
             <div class="supplier-details">
                 <p><strong>Supplier Name:</strong> {{ supplier.name }}</p>
                 <p><strong>Address:</strong> {{ supplier.address }}</p>
@@ -14,10 +25,121 @@
                 <p><strong>Contact Person:</strong> {{ supplier.contact_person }}</p>
                 <p><strong>Supplier ID:</strong> {{ supplier.id }}</p>
             </div>
+            <button onclick="toggleDetails(this)">Toggle Details</button>
+            <a href="{% url 'core:edit' model_name='supplier' pk=supplier.id %}">Edit Supplier</a>
             <hr>
         </li>
     {% endfor %}
 </ul>
-<a href="{% url 'core:add' model_name='supplier' %}">Add Supplier</a>
+
+<a href="{% url 'core:add' model_name='supplier' %}" class="btn btn-primary">Add Supplier</a>
 <a href="{% url 'core:dashboard' %}">Back to Dashboard</a>
+
+<!-- Pagination Controls -->
+<div id="paginationControls"></div>
+
+{% endblock %}
+{% block footer %}
+<script src="{% static 'js/dynamicList.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let currentPage = 1;
+        const itemsPerPage = 5;
+        let totalPages = 1;
+
+        // Filter items by name
+        function filterItems() {
+            const searchBar = document.getElementById('searchBar');
+            const filter = searchBar.value.toLowerCase();
+            const listItems = document.getElementsByClassName('supplier-item');
+
+            for (let i = 0; i < listItems.length; i++) {
+                const itemName = listItems[i].getElementsByClassName('supplier-details')[0].getElementsByTagName('p')[0].innerText.toLowerCase();
+                if (itemName.includes(filter)) {
+                    listItems[i].style.display = '';
+                } else {
+                    listItems[i].style.display = 'none';
+                }
+            }
+            updatePagination();
+        }
+
+        // Sort items
+        function sortItems() {
+            const sortOptions = document.getElementById('sortOptions').value;
+            const itemList = document.getElementById('supplierList');
+            const listItems = Array.from(itemList.getElementsByClassName('supplier-item'));
+
+            listItems.sort((a, b) => {
+                const aValue = a.getElementsByClassName('supplier-details')[0].getElementsByTagName('p')[sortOptions === 'name' ? 0 : 1].innerText.toLowerCase();
+                const bValue = b.getElementsByClassName('supplier-details')[0].getElementsByTagName('p')[sortOptions === 'name' ? 0 : 1].innerText.toLowerCase();
+                return aValue.localeCompare(bValue);
+            });
+
+            itemList.innerHTML = '';
+            listItems.forEach(item => itemList.appendChild(item));
+            updatePagination();
+        }
+
+        // Toggle item details
+        function toggleDetails(button) {
+            const details = button.previousElementSibling;
+            if (details.style.display === 'none' || details.style.display === '') {
+                details.style.display = 'block';
+            } else {
+                details.style.display = 'none';
+            }
+        }
+
+        // Update pagination
+        function updatePagination() {
+            const listItems = Array.from(document.getElementsByClassName('supplier-item'));
+            const visibleItems = listItems.filter(item => item.style.display !== 'none');
+            totalPages = Math.ceil(visibleItems.length / itemsPerPage);
+
+            for (let i = 0; i < visibleItems.length; i++) {
+                if (i >= (currentPage - 1) * itemsPerPage && i < currentPage * itemsPerPage) {
+                    visibleItems[i].style.display = '';
+                } else {
+                    visibleItems[i].style.display = 'none';
+                }
+            }
+
+            renderPaginationControls();
+        }
+
+        // Render pagination controls
+        function renderPaginationControls() {
+            const paginationControls = document.getElementById('paginationControls');
+            paginationControls.innerHTML = '';
+
+            for (let i = 1; i <= totalPages; i++) {
+                const pageButton = document.createElement('button');
+                pageButton.innerText = i;
+                pageButton.classList.add('page-button');
+                if (i === currentPage) {
+                    pageButton.classList.add('active');
+                }
+                pageButton.addEventListener('click', function() {
+                    currentPage = i;
+                    updatePagination();
+                });
+                paginationControls.appendChild(pageButton);
+            }
+        }
+
+        // Attach event listeners
+        document.getElementById('searchBar').addEventListener('keyup', filterItems);
+        document.getElementById('sortOptions').addEventListener('change', sortItems);
+        const toggleButtons = document.getElementsByClassName('toggle-button');
+        for (let i = 0; i < toggleButtons.length; i++) {
+            toggleButtons[i].addEventListener('click', function() {
+                toggleDetails(this);
+            });
+        }
+
+        // Initial pagination setup
+        updatePagination();
+    });
+</script>
 {% endblock %}

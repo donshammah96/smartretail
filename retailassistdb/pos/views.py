@@ -1,16 +1,16 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.views import View
 from django import forms
 from django.utils import timezone
 from .models import (
     Transaction, Discount, Sale, SpecialDiscount, StockAlert, SalesAnalytics, CustomerAnalytics, 
-    Payment, Receipt, Return, Refund
+    Payment, Receipt, Return, Refund, InventoryAdjustment, Inventory
 )
 from .forms import (
    TransactionForm, DiscountForm, SpecialDiscountForm, StockAlertForm, SalesAnalyticsForm, CustomerAnalyticsForm, 
-    PaymentForm, ReceiptForm, ReturnForm, RefundForm, CreateTransactionForm, EditTransactionForm, EditSaleForm, SaleForm
+    PaymentForm, ReceiptForm, ReturnForm, RefundForm, CreateTransactionForm, EditTransactionForm, EditSaleForm, SaleForm, InventoryAdjustmentForm, InventoryForm
 )
 
 
@@ -26,6 +26,8 @@ MODEL_FORM_MAPPING = {
     'receipt': (Receipt, ReceiptForm),
     'return': (Return, ReturnForm),
     'refund': (Refund, RefundForm),
+    'inventory': (Inventory, InventoryForm),
+    'inventory_adjustment': (InventoryAdjustment, InventoryAdjustmentForm),
 }
 
 MODEL_TEMPLATE_MAPPING = {
@@ -40,6 +42,8 @@ MODEL_TEMPLATE_MAPPING = {
     'return': (Return, 'pos/return_list.html', 'pos/return_detail.html'),
     'refund': (Refund, 'pos/refund_list.html', 'pos/refund_detail.html'),
     'sale': (Sale, 'pos/sale_list.html', 'pos/sale_detail.html'),
+    'inventory': (Inventory, 'pos/inventory_list.html', 'pos/inventory_detail.html'),
+    'inventory_adjustment': (InventoryAdjustment, 'pos/inventory_adjustment_list.html', 'pos/inventory_adjustment_detail.html'),
 }
 
 def index(request):
@@ -62,7 +66,12 @@ def add_view(request, model_name):
         form = form_class(request.POST)
         if form.is_valid():
             form.save()
+            if request.is_ajax():
+                return JsonResponse({'success': True})
             return redirect(reverse(f'pos:{model_name}_list'))
+        else:
+            if request.is_ajax():
+                return JsonResponse({'success': False, 'errors': form.errors})
     else:
         form = form_class()
 
@@ -80,7 +89,12 @@ def edit_view(request, model_name, pk):
         form = form_class(request.POST, instance=instance)
         if form.is_valid():
             form.save()
+            if request.is_ajax():
+                return JsonResponse({'success': True})
             return redirect(reverse(f'pos:{model_name}_list'))
+        else:
+            if request.is_ajax():
+                return JsonResponse({'success': False, 'errors': form.errors})
     else:
         form = form_class(instance=instance)
 

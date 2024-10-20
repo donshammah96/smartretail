@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Retail Assist{% endblock %}</title>
+    <title>{% block title %}{{ title|default:"Retail Assist" }}{% endblock %}</title>
+    <meta name="description" content="{% block description %}Your retail solution{% endblock %}">
     {% load static %}
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="{% static 'core/styles.css' %}">
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
     <header class="bg-dark text-white text-center py-3">
@@ -21,19 +23,60 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto">
-                    <li class="nav-item"><a class="nav-link" href="{% url 'core:dashboard' %}">Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'core:about' %}">About</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'core:contact' %}">Contact</a></li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'core:dashboard' %}">Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'users:profile' %}">{{ user.username }}</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'users:logout' %}">Logout</a></li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'users:login' %}">Login</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'users:register_profile' %}">Register</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
 
     <main class="container my-4">
-        {% block content %}
-        
-        {% endblock %}
+        <div class="row">
+            <div class="col-md-3">
+                <!-- Sidebar -->
+                <aside class="sidebar">
+                    {% block sidebar %}
+                    <!-- Default sidebar content or navigation -->
+                    <ul class="list-group">
+                        <li class="list-group-item"><a href="{% url 'core:dashboard' %}">POS</a></li>
+                    </ul>
+                    {% endblock %}
+                </aside>
+            </div>
+            <div class="col-md-9">
+                <!-- Breadcrumb Navigation -->
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        {% block breadcrumbs %}
+                        <li class="breadcrumb-item"><a href="{% url 'core:dashboard' %}">Home</a></li>
+                        <!-- Add more dynamically based on the view -->
+                        {% endblock %}
+                    </ol>
+                </nav>
+
+                <!-- Message Display -->
+                <div class="container mt-3">
+                    {% if messages %}
+                        <div class="alert alert-info">
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                {% block content %}{% endblock %}
+            </div>
+        </div>
     </main>
+
+    {% block extra_js %}{% endblock %}
 
     <footer class="bg-dark text-white text-center py-3">
         <p>&copy; 2024 Retail Assist</p>
