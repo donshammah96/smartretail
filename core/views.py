@@ -32,6 +32,10 @@ MODEL_TEMPLATE_MAPPING = {
     'sale': (Sale, 'pos/sale_list.html', 'pos/sale_detail.html'),
 }
 
+
+def home(request):
+    return render(request, 'core/home.html')  # Make sure you have this template
+
 def index(request):
     # Check if the session key 'visits' exists
     if 'visits' in request.session:

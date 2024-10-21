@@ -20,14 +20,18 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from users import views as user_views 
 from django.conf import settings
+from core import views as core_views  # Assuming 'core' is your app name and it has views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('core/', include("core.urls")),
-    path('pos/', include("pos.urls")),
-    path('users/', include("users.urls")),
-    path('accounts/', include('django.contrib.auth.urls')),
+    path('core/', include('core.urls')),
+    path('pos/', include('pos.urls')),
+    path('users/', include('users.urls')),
+    path('accounts/', include('accounts.urls')),
+    path('media/<path:path>', include('django.views.static.serve')),
+    path('', core_views.home, name='home'),  # Add this line
 ]
+
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
