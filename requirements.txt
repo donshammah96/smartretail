@@ -42,7 +42,7 @@ DateTime==5.3
 debugpy==1.8.0
 decorator==5.1.1
 defusedxml==0.7.1
-Django==5.0.7
+Django==4.2.16
 django-cors-headers==4.4.0
 django-phonenumber-field==8.0.0
 djangorestframework==3.15.2
