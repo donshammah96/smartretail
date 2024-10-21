@@ -1,1 +1,1 @@
-web: gunicorn smartretail.wsgi --log-file -
+web: gunicorn retailassistdb.wsgi --log-file -
