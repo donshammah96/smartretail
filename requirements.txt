@@ -12,7 +12,7 @@ art==6.1
 asgiref==3.8.1
 asttokens==2.4.1
 async-lru==2.0.4
-attrs==18.1.0
+attrs>=22.2.0
 Babel==2.14.0
 beautifulsoup4==4.12.2
 billiard==4.2.1
@@ -35,7 +35,7 @@ colorful==0.5.6
 comm==0.2.0
 ConfigArgParse==1.7
 contourpy==1.2.0
-coursera-dl==0.11.5
+#coursera-dl==0.11.5
 cowsay==6.1
 cycler==0.12.1
 DateTime==5.3
