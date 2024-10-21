@@ -47,7 +47,8 @@ SECRET_KEY = "django-insecure-smqesdo62^rd=2wx1xb4!c=at1gltr0g5rju)gjda#&olo*aj=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['smartretail-df93cdb16bd0.herokuapp.com', 'localhost', '127.0.0.1']
+
 
 
 # Application definition
