@@ -19,7 +19,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Static and media files settings
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Heroku collects static files here
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  # Your app-level static files
+# settings.py
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "core/static"),
+    os.path.join(BASE_DIR, "pos/static"),
+]
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # User-uploaded files
 
@@ -55,6 +59,7 @@ DATABASES = {
     )
 }
 
+print("JAWSDB_URL: ", os.environ.get('JAWSDB_URL'))
 print("Database Config: ", DATABASES['default'])
 
 # Application definition

@@ -33,5 +33,7 @@
 
 <a href="{% url 'core:add' model_name='customer' %}"class="btn btn-primary">Add Customer</a>
 <a href="{% url 'core:dashboard' %}">Back to Dashboard</a>
+{% endblock %}
+{% block footer %}
 <script src="{% static 'js/dynamicList.js' %}"></script>
 {% endblock %}
