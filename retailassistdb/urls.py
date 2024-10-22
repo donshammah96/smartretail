@@ -29,7 +29,7 @@ urlpatterns = [
     path('pos/', include('pos.urls')),
     path('users/', include('users.urls')),
     path('media/<path:path>', serve, {'document_root': settings.MEDIA_ROOT}),  # Serve media files
-    path('', core_views.home, name='home'),  # Home view
+    path('', core_views.index, name='dashboard'),  # Home view
 ]
 
 if settings.DEBUG:
