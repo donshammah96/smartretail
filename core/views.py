@@ -34,7 +34,10 @@ MODEL_TEMPLATE_MAPPING = {
 
 
 def home(request):
-    return render(request, 'core/home.html')  # Make sure you have this template
+    context = {
+        'user': request.user,  # Pass user object to the context
+    }
+    return render(request, 'core/home.html', context)  # Make sure you have this template
 
 def index(request):
     # Check if the session key 'visits' exists
