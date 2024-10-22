@@ -1,4 +1,5 @@
-{% extends 'pos/base.html' %}
+{% extends 'core/base.html' %}
+{% load static %}
 {% block title %}{{ model_name|capfirst }}{% if is_edit %} Edit{% else %} Add{% endif %}{% endblock %}
 {% block header %}{{ model_name|capfirst }}{% if is_edit %} Edit{% else %} Add{% endif %}{% endblock %}
 {% block content %}
