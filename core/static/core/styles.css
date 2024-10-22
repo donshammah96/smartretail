@@ -5,7 +5,11 @@ body {
     padding: 0;
     background-color: #f4f4f4;
 }
-
+.jumbotron {
+    background-color: #f8f9fa; /* Light gray background for jumbotron */
+    padding: 4rem 2rem;
+    text-align: center;
+}
 /* Header Styles */
 header {
     background-color: #333;
