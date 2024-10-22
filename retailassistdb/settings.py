@@ -54,7 +54,7 @@ DATABASES = {
         default=os.environ.get('DATABASE_URL')
     )
 }
-
+print("Database Config: ", DATABASES['default'])
 
 # Application definition
 INSTALLED_APPS = [
