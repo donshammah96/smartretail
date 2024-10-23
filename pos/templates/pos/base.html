@@ -1,89 +1,72 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{{ title|default:"Retail Assist" }}{% endblock %}</title>
-    <meta name="description" content="{% block description %}Your retail solution{% endblock %}">
-    {% load static %}
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{% static 'pos/styles.css' %}">
-    {% block extra_css %}{% endblock %}
+    <title>{% block title %}{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'pos/styles.css' %}"> 
+    <style>
+        /* Initially hide the content (optional, for fade-in effect) */
+        body > *:not(script) { 
+            opacity: 0;
+        }
+    </style>
 </head>
 <body>
-    <header class="bg-dark text-white text-center py-3">
-        <h1>{% block header %}Retail Assist{% endblock %}</h1>
-    </header>
-
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <a class="navbar-brand" href="#">Retail Assist</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <a class="navbar-brand" href="{% url 'home' %}">Smart Retail</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto">
+                <ul class="navbar-nav ms-auto">
                     {% if user.is_authenticated %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'pos:dashboard' %}">Dashboard</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'users:profile' %}">{{ user.username }}</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'users:logout' %}">Logout</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'users:dashboard' %}">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'users:profile' %}">Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'users:logout' %}">Logout</a>
+                        </li>
                     {% else %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'users:login' %}">Login</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'users:register_profile' %}">Register</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'users:login' %}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'users:register' %}">Register</a>
+                        </li>
                     {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
 
-    <main class="container my-4">
-        <div class="row">
-            <div class="col-md-3">
-                <!-- Sidebar -->
-                <aside class="sidebar">
-                    {% block sidebar %}
-                    <!-- Default sidebar content or navigation -->
-                    <ul class="list-group">
-                        <li class="list-group-item"><a href="{% url 'pos:dashboard' %}">POS</a></li>
-                    </ul>
-                    {% endblock %}
-                </aside>
-            </div>
-            <div class="col-md-9">
-                <!-- Breadcrumb Navigation -->
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        {% block breadcrumbs %}
-                        <li class="breadcrumb-item"><a href="{% url 'pos:dashboard' %}">Home</a></li>
-                        <!-- Add more dynamically based on the view -->
-                        {% endblock %}
-                    </ol>
-                </nav>
+    <div class="container mt-5">
+        {% block content %}{% endblock %}
+    </div>
 
-                <!-- Message Display -->
-                <div class="container mt-3">
-                    {% if messages %}
-                        <div class="alert alert-info">
-                            {% for message in messages %}
-                                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script>
+        // Function to fade in an element (optional, for fade-in effect)
+        function fadeIn(element, delay) {
+            setTimeout(() => {
+                element.style.transition = "opacity 0.5s ease-in-out";
+                element.style.opacity = 1;
+            }, delay);
+        }
 
-                {% block content %}{% endblock %}
-            </div>
-        </div>
-    </main>
+        // Get all elements to fade in (optional, for fade-in effect)
+        const elements = document.querySelectorAll('body > *:not(script)');
 
-    {% block extra_js %}{% endblock %}
-
-    <footer class="bg-dark text-white text-center py-3">
-        <p>&copy; 2024 Retail Assist</p>
-    </footer>
-
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        // Fade in elements with increasing delay (optional, for fade-in effect)
+        let delay = 0;
+        elements.forEach(element => {
+            fadeIn(element, delay);
+            delay += 200; // Increase delay for each element
+        });
+    </script>
 </body>
 </html>

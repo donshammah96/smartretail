@@ -3,25 +3,46 @@
 {% block title %}Admin Dashboard{% endblock %}
 {% block header %}Admin Dashboard{% endblock %}
 {% block content %}
-<h1>Admin Dashboard</h1>
-<p>Welcome to the Admin Dashboard. Here you can manage all aspects of the system.</p>
+<div class="dashboard-container">
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <h3>Admin Menu</h3>
+        <button class="btn btn-primary" data-url="{% url 'users:employee_list' %}" onclick="location.href=this.getAttribute('data-url')">Manage Employees</button>
+        <button class="btn btn-primary" data-url="{% url 'users:user_performance_report' %}" onclick="location.href=this.getAttribute('data-url')">Performance Reports</button>
+        <button class="btn btn-primary" data-url="{% url 'users:user_activity_report' %}" onclick="location.href=this.getAttribute('data-url')">Activity Reports</button>
+        <button class="btn btn-primary" data-url="{% url 'core:product_list' %}" onclick="location.href=this.getAttribute('data-url')">Manage Products</button>
+        <button class="btn btn-primary" data-url="{% url 'pos:inventory_list' %}" onclick="location.href=this.getAttribute('data-url')">Inventory Management</button>
+        <button class="btn btn-primary" data-url="{% url 'pos:sales_analytics_list' %}" onclick="location.href=this.getAttribute('data-url')">Sales Reports</button>
+        <button class="btn btn-secondary mt-3" data-url="{% url 'users:logout' %}" onclick="location.href=this.getAttribute('data-url')">Logout</button>
+    </div>
+    
 
-<!-- Logout link -->
-<a href="{% url 'users:logout' %}" class="btn btn-danger mb-3">Logout</a>
+    <!-- Main Dashboard Content -->
+    <div class="dashboard-content">
+        <h1>Welcome, Admin</h1>
+        <div class="stats-cards">
+            <div class="card">
+                <h3>Total Users</h3>
+                <p>{{ total_users }}</p>
+            </div>
+            <div class="card">
+                <h3>Total Employees</h3>
+                <p>{{ total_employees }}</p>
+            </div>
+            <div class="card">
+                <h3>Total Sales</h3>
+                <p>{{ total_sales }}</p>
+            </div>
+        </div>
 
-<ul>
-    <li><a href="{% url 'users:employee_list' %}" id="manageEmployeesLink">Manage Employees</a></li>
-    <li><a href="{% url 'users:user_performance_report' %}" id="performanceReportLink">View Performance Reports</a></li>
-    <li><a href="{% url 'users:user_activity_report' %}" id="activityReportLink">View Activity Reports</a></li>
-</ul>
-
-<!-- Placeholder for dynamic content -->
-<div id="dynamicContent"></div>
-
-<!-- Example chart -->
-<canvas id="performanceChart" width="400" height="200"></canvas>
+        <!-- Performance Overview Chart -->
+        <h3>Performance Overview</h3>
+        <canvas id="performanceChart" width="400" height="200"></canvas>
+    </div>
+</div>
 {% endblock %}
 {% block footer %}
+<!-- Scripts for JavaScript go here -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="{% static 'js/dashboard.js' %}"></script>
 {% endblock %}

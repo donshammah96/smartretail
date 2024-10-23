@@ -2,22 +2,68 @@
 {% load static %}
 {% block title %}Manager Dashboard{% endblock %}
 {% block header %}Manager Dashboard{% endblock %}
+
 {% block content %}
-<h1>Manager Dashboard</h1>
-<p>Welcome to the Manager Dashboard. Here you can manage your team and view reports.</p>
-<ul>
-    <li><a href="{% url 'users:employee_list' %}" id="manageEmployeesLink">Manage Employees</a></li>
-    <li><a href="{% url 'users:user_performance_report' %}" id="performanceReportLink">View Performance Reports</a></li>
-    <li><a href="{% url 'users:user_activity_report' %}" id="activityReportLink">View Activity Reports</a></li>
-</ul>
+<div class="container">
+    <h1>Manager Dashboard</h1>
+    <p>Welcome to the Manager Dashboard. Here you can manage day-to-day operations.</p>
 
-<!-- Placeholder for dynamic content -->
-<div id="dynamicContent"></div>
+    <!-- Sidebar with Manager-specific options -->
+    <div class="sidebar">
+        <h3>Manager Menu</h3>
+        
+        <!-- Employee Management Section -->
+        <button class="btn btn-primary" data-url="{% url 'users:employee_list' %}" onclick="location.href=this.getAttribute('data-url')">Manage Employees</button>
+        
+        <!-- Sales Tracking Section -->
+        <button class="btn btn-primary" data-url="{% url 'pos:sales_report' %}" onclick="location.href=this.getAttribute('data-url')">Sales Reports</button>
+        
+        <!-- Performance Reports Section -->
+        <button class="btn btn-primary" data-url="{% url 'users:user_performance_report' %}" onclick="location.href=this.getAttribute('data-url')">Performance Reports</button>
 
-<!-- Example chart -->
-<canvas id="performanceChart" width="400" height="200"></canvas>
+        <!-- Core Access for Inventory and Product Management -->
+        <button class="btn btn-primary" data-url="{% url 'core:product_list' %}" onclick="location.href=this.getAttribute('data-url')">Manage Products</button>
+        <button class="btn btn-primary" data-url="{% url 'pos:inventory_list' %}" onclick="location.href=this.getAttribute('data-url')">Inventory Management</button>
+        
+        <!-- Logout Button -->
+        <button class="btn btn-secondary mt-3" data-url="{% url 'users:logout' %}" onclick="location.href=this.getAttribute('data-url')">Logout</button>
+    </div>
+
+    <!-- Content section for dynamic updates or reports -->
+    <div id="dynamicContent"></div>
+
+    <!-- Example of a simple chart for tracking -->
+    <canvas id="salesChart" width="400" height="200"></canvas>
+</div>
 {% endblock %}
+
 {% block footer %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="{% static 'js/dashboard.js' %}"></script>
+<script>
+    // Custom JS for Manager Dashboard, e.g., for rendering charts
+    document.addEventListener('DOMContentLoaded', function () {
+        const ctx = document.getElementById('salesChart').getContext('2d');
+        const salesChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+                datasets: [{
+                    label: 'Daily Sales',
+                    data: [1200, 1900, 3000, 500, 2000, 3000, 4000],
+                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+</script>
 {% endblock %}

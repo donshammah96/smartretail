@@ -4,6 +4,9 @@ from django.urls import reverse
 from django.views import View
 from django import forms
 from django.utils import timezone
+from django.core.paginator import Paginator
+from django.contrib import messages
+
 from .models import (
     Transaction, Discount, Sale, SpecialDiscount, StockAlert, SalesAnalytics, CustomerAnalytics, 
     Payment, Receipt, Return, Refund, InventoryAdjustment, Inventory
@@ -61,56 +64,102 @@ def index(request):
     return render(request, "pos/dashboard.html", {'visits': visits})
 
 def add_view(request, model_name):
-    model, form_class = MODEL_FORM_MAPPING.get(model_name)
-    if request.method == "POST":
-        form = form_class(request.POST)
-        if form.is_valid():
-            form.save()
-            if request.is_ajax():
-                return JsonResponse({'success': True})
-            return redirect(reverse(f'pos:{model_name}_list'))
+    """
+    Generic view for adding new objects to the POS system.
+    Handles form submission and AJAX requests.
+    """
+    try:
+        model, form_class = MODEL_FORM_MAPPING.get(model_name)
+        if request.method == "POST":
+            form = form_class(request.POST)
+            if form.is_valid():
+                form.save()
+                if request.is_ajax():
+                    return JsonResponse({'success': True})
+                return redirect(reverse(f'pos:{model_name}_list'))
+            else:
+                if request.is_ajax():
+                    return JsonResponse({'success': False, 'errors': form.errors})
         else:
-            if request.is_ajax():
-                return JsonResponse({'success': False, 'errors': form.errors})
-    else:
-        form = form_class()
+            form = form_class()
 
-    context = {
-        'form': form,
-        'model_name': model_name,
-        'is_edit': False,
-    }
-    return render(request, 'pos/add_edit.html', context)
+        context = {
+            'form': form,
+            'model_name': model_name,
+            'is_edit': False,
+        }
+        return render(request, 'pos/add_edit.html', context)
+
+    except TypeError:
+        messages.error(request, f"Invalid model name: {model_name}")
+        return redirect('pos:dashboard')  # Redirect to POS dashboard
 
 def edit_view(request, model_name, pk):
-    model, form_class = MODEL_FORM_MAPPING.get(model_name)
-    instance = get_object_or_404(model, pk=pk)
-    if request.method == "POST":
-        form = form_class(request.POST, instance=instance)
-        if form.is_valid():
-            form.save()
-            if request.is_ajax():
-                return JsonResponse({'success': True})
-            return redirect(reverse(f'pos:{model_name}_list'))
+    """
+    Generic view for editing existing objects in the POS system.
+    Handles form submission and AJAX requests.
+    """
+    try:
+        model, form_class = MODEL_FORM_MAPPING.get(model_name)
+        instance = get_object_or_404(model, pk=pk)
+        if request.method == "POST":
+            form = form_class(request.POST, instance=instance)
+            if form.is_valid():
+                form.save()
+                if request.is_ajax():
+                    return JsonResponse({'success': True})
+                return redirect(reverse(f'pos:{model_name}_list'))
+            else:
+                if request.is_ajax():
+                    return JsonResponse({'success': False, 'errors': form.errors})
         else:
-            if request.is_ajax():
-                return JsonResponse({'success': False, 'errors': form.errors})
-    else:
-        form = form_class(instance=instance)
+            form = form_class(instance=instance)
 
-    context = {
-        'form': form,
-        'model_name': model_name,
-        'is_edit': True,
-    }
-    return render(request, 'pos/add_edit.html', context)
+        context = {
+            'form': form,
+            'model_name': model_name,
+            'is_edit': True,
+        }
+        return render(request, 'pos/add_edit.html', context)
+
+    except TypeError:
+        messages.error(request, f"Invalid model name: {model_name}")
+        return redirect('pos:dashboard')  # Redirect to POS dashboard
 
 def generic_list_view(request, model_name):
-    model, list_template, _ = MODEL_TEMPLATE_MAPPING.get(model_name)
-    objects = model.objects.all()
-    return render(request, list_template, {model_name + 's': objects})
+    """
+    Generic view for displaying a paginated list of objects in the POS system.
+    """
+    try:
+        model, list_template, _ = MODEL_TEMPLATE_MAPPING.get(model_name)
+        objects = model.objects.all()
+
+        paginator = Paginator(objects, 10)  # 10 items per page
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        context = {
+            model_name + '_list': page_obj,
+            'page_obj': page_obj,
+        }
+        return render(request, list_template, context)
+
+    except TypeError:
+        messages.error(request, f"Invalid model name: {model_name}")
+        return redirect('pos:dashboard')  # Redirect to POS dashboard
 
 def generic_detail_view(request, model_name, pk):
-    model, _, detail_template = MODEL_TEMPLATE_MAPPING.get(model_name)
-    object = get_object_or_404(model, pk=pk)
-    return render(request, detail_template, {model_name: object})
+    """
+    Generic view for displaying details of an object in the POS system.
+    """
+    try:
+        model, _, detail_template = MODEL_TEMPLATE_MAPPING.get(model_name)
+        object = get_object_or_404(model, pk=pk)
+        context = {
+            model_name: object,
+        }
+        return render(request, detail_template, context)
+
+    except TypeError:
+        messages.error(request, f"Invalid model name: {model_name}")
+        return redirect('pos:dashboard')  # Redirect to POS dashboard
