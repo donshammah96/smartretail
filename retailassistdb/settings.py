@@ -61,7 +61,7 @@ ALLOWED_HOSTS = ['smartretail-df93cdb16bd0.herokuapp.com', 'localhost', '127.0.0
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.environ.get('JAWSDB_URL')
+        default=os.environ.get('DATABASE_URL')
     )
 }
 
