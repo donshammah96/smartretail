@@ -16,14 +16,7 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Static and media files settings
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Heroku collects static files here
-# settings.py
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "core/static"),
-    os.path.join(BASE_DIR, "pos/static"),
-]
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # User-uploaded files
 
@@ -41,6 +34,16 @@ MIDDLEWARE = [
 
 # Enable gzip and cache static files with Whitenoise
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Static and media files settings
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "core/static"),
+    os.path.join(BASE_DIR, "pos/static"),
+]
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Heroku collects static files here
 
 # Custom user model
 AUTH_USER_MODEL = 'users.CustomUser'
