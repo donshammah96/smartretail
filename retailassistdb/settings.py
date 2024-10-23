@@ -118,3 +118,9 @@ USE_TZ = True
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Use Django's default session engine
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Use database-backed sessions
+SESSION_COOKIE_AGE = 3600  # Session timeout in seconds (e.g., 1 hour)
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Keep session even if the browser is closed
+SESSION_SAVE_EVERY_REQUEST = True  # Save session data on every request

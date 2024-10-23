@@ -52,7 +52,9 @@ class Employee(CoreEmployee):
     def __str__(self):
         return self.user.username
 
-
+    def get_full_name(self):
+        return f"{self.user.first_name} {self.user.last_name}"
+    
 class UserActivity(models.Model):
     """
     Model to track user activities.
@@ -64,3 +66,28 @@ class UserActivity(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.action} - {self.timestamp}"
+    
+class TrainingResource(models.Model):
+    """
+    Model to store training resources.
+    Stores the title, description, and file for the resource.
+    """
+    title = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+    file = models.FileField(upload_to="training_resources/")
+
+    def __str__(self):
+        return self.title
+    
+class Notification(models.Model):
+    """
+    Model to store notifications.
+    Stores the title, message, and timestamp of the notification.
+    """
+    title = models.CharField(max_length=255)
+    message = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+    

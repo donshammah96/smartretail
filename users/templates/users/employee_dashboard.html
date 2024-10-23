@@ -1,22 +1,26 @@
-{% extends 'users/base.html' %}
+{% extends 'base.html' %}
 {% load static %}
 {% block title %}Employee Dashboard{% endblock %}
 {% block header %}Employee Dashboard{% endblock %}
 {% block content %}
-<h1>Employee Dashboard</h1>
-<p>Welcome to the Employee Dashboard. Here you can view your tasks and performance.</p>
-<ul>
-    <li><a href="{% url 'users:profile' %}" id="viewProfileLink">View Profile</a></li>
-    <li><a href="{% url 'users:edit_profile' %}" id="editProfileLink">Edit Profile</a></li>
-</ul>
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<div class="dashboard-container">
+    <div class="sidebar">
+        <h3>Employee Menu</h3>
+        <button class="btn btn-primary mb-2" data-url="{% url 'users:sales_overview' %}" onclick="location.href=this.getAttribute('data-url')">Sales Overview</button>
+        <button class="btn btn-primary mb-2" data-url="{% url 'users:profile' %}" onclick="location.href=this.getAttribute('data-url')">Profile</button>
+        <button class="btn btn-primary mb-2" data-url="{% url 'users:training_resources' %}" onclick="location.href=this.getAttribute('data-url')">Training & Resources</button>
+        <button class="btn btn-primary mb-2" data-url="{% url 'users:notifications' %}" onclick="location.href=this.getAttribute('data-url')">Notifications</button>
+        <button class="btn btn-secondary mt-3" data-url="{% url 'users:logout' %}" onclick="location.href=this.getAttribute('data-url')">Logout</button>
+    </div>
 
-<!-- Placeholder for dynamic content -->
-<div id="dynamicContent"></div>
-
-<!-- Example chart -->
-<canvas id="performanceChart" width="400" height="200"></canvas>
+    <div class="dashboard-content">
+        <h1>Welcome, {{ employee_name }}</h1>
+        <!-- Add your dashboard content here -->
+    </div>
+</div>
 {% endblock %}
 {% block footer %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="{% static 'js/employee_dashboard.js' %}"></script>
+<script src="{% static 'js/dashboard.js' %}"></script>
 {% endblock %}
