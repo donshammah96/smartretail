@@ -18,6 +18,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 MEDIA_URL = '/media/'
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # User-uploaded files
 
 # Whitenoise middleware for serving static files
@@ -50,7 +51,9 @@ AUTH_USER_MODEL = 'users.CustomUser'
 
 # Secret key and debug mode (from environment variables)
 SECRET_KEY = os.getenv('SECRET_KEY', 'your-default-secret-key')
-DEBUG = os.getenv('DEBUG', 'False').lower() in ['true', '1']
+
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+
 
 # Allowed hosts
 ALLOWED_HOSTS = ['smartretail-df93cdb16bd0.herokuapp.com', 'localhost', '127.0.0.1']
