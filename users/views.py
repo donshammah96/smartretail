@@ -133,7 +133,7 @@ def employee_dashboard(request):
         context = {
         'employee_name': employee.get_full_name(),  # Assuming the Employee model has a method to get the full name
         'sales_overview_url': reverse('users:sales_overview'),
-        'inventory_check_url': reverse('pos:inventory_check'),
+        'inventory_check_url': reverse('users:inventory_check'),
         'profile_url': reverse('users:profile'),
         'training_resources_url': reverse('users:training_resources'),
         'notifications_url': reverse('users:notifications'),
