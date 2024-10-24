@@ -45,13 +45,13 @@ def sales_overview_admin(request):
 @role_required('employee')
 def inventory_check_employee(request):
     inventory = Inventory.objects.filter(employee=request.user)
-    return render(request, 'core/inventory_check.html', {'inventory': inventory})
+    return render(request, 'users/inventory_check.html', {'inventory': inventory})
 
 @login_required
 @role_required('admin')
 def inventory_check_admin(request):
     inventory = Inventory.objects.all()
-    return render(request, 'core/inventory_check.html', {'inventory': inventory})
+    return render(request, 'users/inventory_check.html', {'inventory': inventory})
 
 @login_required
 @role_required('employee')
