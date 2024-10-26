@@ -1,5 +1,18 @@
+"""
+Admin configuration for core app models.
+"""
+
 from django.contrib import admin
-from .models import Product, Customer, Employee, Supplier, RevenueReport, ExpenseReport, DataAnalytics, Shift
+from .models import (
+    Product,
+    Customer,
+    Employee,
+    Supplier,
+    RevenueReport,
+    ExpenseReport,
+    DataAnalytics,
+    Shift,
+)
 
 # Register your models here.
 admin.site.register(Product)

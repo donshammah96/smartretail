@@ -21,15 +21,26 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.views.static import serve  # Import the serve function
 from users import views as user_views
-from core import views as core_views  # Assuming 'core' is your app name and it has views
+from users import (
+    views as users_views,
+)  # Assuming 'core' is your app name and it has views
+
+def trigger_error(request):
+    division_by_zero = 1 / 0
+
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('core/', include('core.urls')),
-    path('pos/', include('pos.urls')),
-    path('users/', include('users.urls')),
-    path('media/<path:path>', serve, {'document_root': settings.MEDIA_ROOT}),  # Serve media files
-    path('', core_views.home, name='home'),  # Home view
+    path("admin/", admin.site.urls, name="admin"),  # Admin site
+    path("core/", include("core.urls")),
+    path("pos/", include("pos.urls")),
+    path("users/", include("users.urls")),
+    path(
+        "media/<path:path>", serve, {"document_root": settings.MEDIA_ROOT}
+    ),  # Serve media files
+    path("", users_views.home, name="home"),  # Home view
+    path("__debug__/", include("debug_toolbar.urls")),  # Debug toolbar
+    path("silk/", include("silk.urls", namespace="silk")),  # Django Silk
+    path("sentry-debug/", trigger_error),  # Sentry
 ]
 
 if settings.DEBUG:

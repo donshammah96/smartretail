@@ -1,5 +1,5 @@
 {% extends 'users/base.html' %}
-{% load static %}
+{% load static compress %}
 {% block title %}Employee List{% endblock %}
 {% block header %}Employee List{% endblock %}
 {% block content %}
@@ -48,5 +48,7 @@
 {% endif %}
 {% endblock %}
 {% block footer %}
+{% compress js %}
 <script src="{% static 'js/searchSortPaginate.js' %}"></script>
+{% endcompress %}
 {% endblock %}

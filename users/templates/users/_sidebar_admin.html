@@ -1,0 +1,10 @@
+<div class="sidebar">
+    <h3>Admin Navigation</h3>
+    <a href="{% url 'users:admin_dashboard' %}" class="btn btn-outline-primary">Dashboard</a>
+    <a href="{% url 'core:list' model_name='employee' %}" class="btn btn-outline-primary">Manage Employees</a>
+    <a href="{% url 'core:list' model_name='product' %}" class="btn btn-outline-primary">Manage Products</a> 
+    <a href="{% url 'pos:list' model_name='sale' %}" class="btn btn-outline-primary">Manage Sales</a>
+    <a href="{% url 'users:user_performance_report' %}" class="btn btn-outline-primary">Performance Report</a>
+    <a href="{% url 'users:user_activity_report' %}" class="btn btn-outline-primary">Activity Report</a>
+    <a href="{% url 'admin:index' %}" class="btn btn-outline-danger">Admin Functionality</a>
+  </div>

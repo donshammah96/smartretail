@@ -1,4 +1,5 @@
 {% extends 'core/base.html' %}
+{% load static compress %}
 {% block title %}Add Data Analytics{% endblock %}
 {% block header %}Add Data Analytics{% endblock %}
 {% block content %}
@@ -8,5 +9,10 @@
     {{ form.as_p }}
     <button type="submit" class="btn btn-primary">Add Data Analytics</button>
 </form>
-<a href="{% url 'core:data_analytics_list' %}" class="btn btn-secondary">Back to Data Analytics List</a>
+<a href="{% url 'core:data_analytics_list' %}" class="btn btn-primary">Back to Data Analytics List</a>
+{% endblock %}
+{% block footer %}
+{% compress js %}
+<script src="{% static 'js/formValidation.js' %}"></script>
+{% endcompress %}
 {% endblock %}

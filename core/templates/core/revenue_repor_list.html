@@ -1,5 +1,5 @@
 {% extends 'core/base.html' %}
-{% load static %}
+{% load static compress %}
 {% block title %}Revenue Report{% endblock %}
 {% block header %}Revenue Report{% endblock %}
 {% block content %}
@@ -36,5 +36,8 @@
 <a href="{% url 'core:dashboard' %}">Back to Dashboard</a>
 {% endblock %}
 {% block footer %}
+{% compress js %}
 <script src="{% static 'js/dynamicList.js' %}"></script>
+<script src="{% static 'js/filterSort.js' %}"></script>
+{% endcompress %}
 {% endblock %}

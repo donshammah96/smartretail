@@ -9,9 +9,14 @@ from .models import CustomUser
 
 
 class UserRegisterForm(UserCreationForm):
-    email = forms.EmailField(widget=forms.EmailInput(attrs={"class": "form-control"}))
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={"class": "form-control"}),
+        help_text="Enter a valid email address."
+    )
     password1 = forms.CharField(
-        label="Password", widget=forms.PasswordInput(attrs={"class": "form-control"})
+        label="Password", 
+        widget=forms.PasswordInput(attrs={"class": "form-control"}),
+        help_text="Your password must contain at least 8 characters."
     )
     password2 = forms.CharField(
         label="Confirm Password",
@@ -92,6 +97,11 @@ class UserEditForm(UserChangeForm):
             "dashboard_customization": "Dashboard Customization",
         }
 
+    def __init__(self, *args, **kwargs):
+        super(UserEditForm, self).__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({"class": "form-control"})
+
 
 class UserLoginForm(AuthenticationForm):
     username = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
@@ -102,17 +112,21 @@ class UserLoginForm(AuthenticationForm):
 
 class CustomPasswordChangeForm(PasswordChangeForm):
     old_password = forms.CharField(
-        widget=forms.PasswordInput(attrs={"class": "form-control"})
+        widget=forms.PasswordInput(attrs={"class": "form-control"}),
+        label="Old Password"
     )
     new_password1 = forms.CharField(
-        widget=forms.PasswordInput(attrs={"class": "form-control"})
+        widget=forms.PasswordInput(attrs={"class": "form-control"}),
+        label="New Password"
     )
     new_password2 = forms.CharField(
-        widget=forms.PasswordInput(attrs={"class": "form-control"})
+        widget=forms.PasswordInput(attrs={"class": "form-control"}),
+        label="Confirm New Password"
     )
 
 
 class UserDeleteForm(forms.Form):
     confirm = forms.BooleanField(
-        widget=forms.CheckboxInput(attrs={"class": "form-check-input"})
+        widget=forms.CheckboxInput(attrs={"class": "form-check-input"}),
+        label="Are you sure you want to delete your account?"
     )

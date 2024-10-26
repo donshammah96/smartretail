@@ -1,4 +1,5 @@
 {% extends 'users/base.html' %}
+{% load static compress %}
 {% block title %}Employee Profile{% endblock %}
 {% block header %}Employee Profile{% endblock %}
 {% block content %}
@@ -46,9 +47,11 @@
         </tr>
     </table>
 </div>
-<a href="{% url 'users:employee_list' %}" class="btn btn-secondary">Back to Employee List</a>
+<a href="{% url 'core:employee_list' %}" class="btn btn-secondary">Back to Employee List</a>
 {% endblock %}
 {% block footer %}
+{% compress js %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="{% static 'js/employeeProfile.js' %}"></script>
+{% endcompress %}
 {% endblock %}

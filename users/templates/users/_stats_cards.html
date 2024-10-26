@@ -1,0 +1,9 @@
+{# users/_stats_cards.html #}
+<div class="stats-cards">
+    {% for stat in stats %}
+        <div class="card">
+            <h3>{{ stat.label }}</h3>
+            <p>{{ stat.value }}</p>
+        </div>
+    {% endfor %}
+</div>

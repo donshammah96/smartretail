@@ -1,5 +1,18 @@
 from django.contrib import admin
-from .models import Transaction, Discount, Sale, SpecialDiscount, StockAlert, SalesAnalytics, CustomerAnalytics, Payment, Receipt, Return, Refund
+from .models import (
+    Transaction,
+    Discount,
+    Sale,
+    SpecialDiscount,
+    StockAlert,
+    SalesAnalytics,
+    CustomerAnalytics,
+    Payment,
+    Receipt,
+    Return,
+    Refund,
+)
+
 # Register your models here.
 
 admin.site.register(Transaction)

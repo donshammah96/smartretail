@@ -1,4 +1,5 @@
 {% extends 'core/base.html' %}
+{% load static compress %}
 {% block title %}Customer Detail{% endblock %}
 {% block header %}Customer Detail{% endblock %}
 {% block content %}
@@ -8,6 +9,11 @@
 <p><strong>Phone:</strong> {{ customer.phone }}</p>
 <p><strong>Address:</strong> {{ customer.address }}</p>
 <p><strong>Joined Date:</strong> {{ customer.joined_date }}</p>
-<a href="{% url 'core:edit' model_name='customer' pk=customer.pk %}" class="btn btn-primary">Edit Customer</a>
-<a href="{% url 'core:list' model_name='customer' %}" class="btn btn-secondary">Back to Customer List</a>
+<a href="{% url 'core:customer_edit' pk=customer.id %}" class="btn btn-primary">Edit Customer</a>
+<a href="{% url 'core:customer_list' %}" class="btn btn-secondary">Back to Customer List</a>
+{% endblock %}
+{% block footer %}
+{% compress js %}
+<script src="{% static 'js/toggleDetails.js' %}"></script>
+{% endcompress %}
 {% endblock %}

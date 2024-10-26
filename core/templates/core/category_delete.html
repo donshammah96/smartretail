@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %}
+{% load static compress %}
+{% block title %}Delete Category{% endblock %}
+{% block header %}Delete Category{% endblock %}
+{% block content %}
+<h1>Delete Category</h1>
+<p>Are you sure you want to delete the category "{{ object.name }}"?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a href="{% url 'core:category_list' %}" class="btn btn-primary">Cancel</a>
+</form>
+{% endblock %}
+{% block footer %}
+{% compress js %}
+<script src="{% static 'js/deleteConfirmation.js' %}"></script>
+{% endcompress %}
+{% endblock %}
