@@ -20,5 +20,6 @@
 <a href="{% url 'core:edit' model_name=model_name pk=object.pk %}" class="btn btn-warning">Edit</a>
 {% endblock %}
 {% block footer %}
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 <script src="{% static 'js/toggleDetails.js' %}"></script>
 {% endblock %}

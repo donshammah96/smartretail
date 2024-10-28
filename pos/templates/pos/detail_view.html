@@ -1,6 +1,6 @@
 {% extends 'core/base.html' %}
 {% load pos_custom_filters %}
-{% load static %}
+{% load static compress %}
 
 {% block title %}Detail{% endblock %}
 {% block header %}Detail{% endblock %}
@@ -21,4 +21,7 @@
 {% endblock %}
 {% block footer %}
 <script src="{% static 'js/toggleDetails.js' %}"></script>
+{% compress js %}
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+{% endcompress %}
 {% endblock %}
