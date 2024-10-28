@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Inventory Management System",
   "main": "index.js",
+  "engines": {
+    "node": "20.17.0"
+  },
   "scripts": {
     "heroku-postbuild": "npm run build",
     "build:css": "sass styles/main.scss public/css/main.css --no-source-map",
