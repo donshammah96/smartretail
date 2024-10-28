@@ -3,39 +3,38 @@
 {% block header %}Dashboard{% endblock %}
 
 {% block content %}
-<div class="dashboard dashboard-{{ user.role }}">
+<div class="dashboard dashboard-{{ user.role }} container mt-5">
     <h1>Welcome, {{ user.username }}!</h1>
-
-    {% if user.role == 'admin' %}
-        <p>Welcome to the Admin Dashboard. Here you can manage all aspects of the system.</p>
-        <ul>
-            <li><a href="{% url 'users:admin_dashboard' %}">Admin Dashboard</a></li>
-            <li><a href="{% url 'users:employee_list' %}">Manage Employees</a></li>
-            <li><a href="{% url 'users:user_performance_report' %}">View Performance Reports</a></li>
-            <li><a href="{% url 'users:user_activity_report' %}">View Activity Reports</a></li>
-        </ul>
-    {% elif user.role == 'manager' %}
-        <p>Welcome to the Manager Dashboard. Here you can manage your team and view reports.</p>
-        <ul>
-            <li><a href="{% url 'users:manager_dashboard' %}">Manager Dashboard</a></li>
-            <li><a href="{% url 'users:employee_list' %}">Manage Employees</a></li>
-            <li><a href="{% url 'users:user_performance_report' %}">View Performance Reports</a></li>
-            <li><a href="{% url 'users:user_activity_report' %}">View Activity Reports</a></li>
-        </ul>
-    {% elif user.role == 'employee' %}
-        <p>Welcome to the Employee Dashboard. Here you can view your tasks and performance.</p>
-        <ul>
-            <li><a href="{% url 'users:employee_dashboard' %}">Employee Dashboard</a></li>
-            <li><a href="{% url 'users:profile' %}">View Profile</a></li>
-            <li><a href="{% url 'users:edit_profile' %}">Edit Profile</a></li>
-        </ul>
-    {% else %}
-        <p>Welcome to the Dashboard. Please select an option below:</p>
-        <ul>
-            <li><a href="{% url 'users:profile' %}">View Profile</a></li>
-            <li><a href="{% url 'users:edit_profile' %}">Edit Profile</a></li>
-        </ul>
-    {% endif %}
+     
+    <div class="row">
+        {% if user.role == 'admin' %}
+            <div class="col-12">
+                <p>Welcome to the Admin Dashboard. Here you can manage all aspects of the system.</p>
+            </div>
+            {% include 'users/_sidebar_admin.html' %}
+            
+        {% elif user.role == 'manager' %}
+            <div class="col-12">
+                <p>Welcome to the Manager Dashboard. Here you can manage your team and view reports.</p>
+            </div>
+            {% include 'users/_sidebar_manager.html' %}
+            
+        {% elif user.role == 'employee' %}
+            <div class="col-12">
+                <p>Welcome to the Employee Dashboard. Here you can view your tasks and performance.</p>
+            </div>
+            {% include 'users/_sidebar_employee.html' %}
+            
+        {% else %}
+            <div class="col-12">
+                <p>Welcome to the Dashboard. Please select an option below:</p>
+                <ul>
+                    <li><a href="{% url 'users:profile' %}">View Profile</a></li>
+                    <li><a href="{% url 'users:edit_profile' %}">Edit Profile</a></li>
+                </ul>
+            </div>
+        {% endif %}
+    </div>
 
     <a href="{% url 'users:logout' %}" class="btn btn-outline-danger mt-3">Logout</a>
 </div>

@@ -8,7 +8,7 @@
 {% block content %}
     <div class="container">
         <h2>{{ model_name|capfirst }}s</h2>
-
+        {% debug %}
         {% if object %} 
             <div class="object-details">
                 <h3>{{ object.name }}</h3> 

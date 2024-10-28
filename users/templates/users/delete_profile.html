@@ -1,15 +1,23 @@
 {% extends 'users/base.html' %}
+{% load static %}
 {% block title %}Delete Profile{% endblock %}
 {% block header %}Delete Profile{% endblock %}
 {% block content %}
-<h1>Delete Profile</h1>
+<div class="container text-center mt-5">
+    <h1 class="text-danger">Delete Profile</h1>
+    <p class="mt-3">Are you sure you want to delete your profile? This action <strong>cannot</strong> be undone.</p>
 
-<p>Are you sure you want to delete your profile? This action cannot be undone.</p>
+    <form method="post" class="d-flex flex-column align-items-center">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="mt-4">
+            <button type="submit" class="btn btn-danger me-2">Delete Profile</button>
+            <a href="{% url 'users:profile' %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-danger">Delete Profile</button>
-    <a href="{% url 'users:profile' %}" class="btn btn-secondary">Cancel</a>
-</form>
+{% block footer %}
+<link rel="stylesheet" href="{% static 'users/styles.css' %}">
 {% endblock %}
