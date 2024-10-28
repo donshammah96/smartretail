@@ -1,9 +1,11 @@
 {# users/_stats_cards.html #}
-<div class="stats-cards">
+<div class="stats-cards d-flex flex-wrap justify-content-center gap-3">
     {% for stat in stats %}
-        <div class="card">
-            <h3>{{ stat.label }}</h3>
-            <p>{{ stat.value }}</p>
+        <div class="card text-center p-3" style="width: 15rem;">
+            <div class="card-body">
+                <h3 class="card-title">{{ stat.label }}</h3>
+                <p class="card-text display-4">{{ stat.value }}</p>
+            </div>
         </div>
     {% endfor %}
 </div>

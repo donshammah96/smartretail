@@ -1,10 +1,24 @@
 <div class="sidebar">
-    <h3>Admin Navigation</h3>
-    <a href="{% url 'users:admin_dashboard' %}" class="btn btn-outline-primary">Dashboard</a>
-    <a href="{% url 'core:list' model_name='employee' %}" class="btn btn-outline-primary">Manage Employees</a>
-    <a href="{% url 'core:list' model_name='product' %}" class="btn btn-outline-primary">Manage Products</a> 
-    <a href="{% url 'pos:list' model_name='sale' %}" class="btn btn-outline-primary">Manage Sales</a>
-    <a href="{% url 'users:user_performance_report' %}" class="btn btn-outline-primary">Performance Report</a>
-    <a href="{% url 'users:user_activity_report' %}" class="btn btn-outline-primary">Activity Report</a>
-    <a href="{% url 'admin:index' %}" class="btn btn-outline-danger">Admin Functionality</a>
-  </div>
+  <h3 class="sidebar-title">Admin Navigation</h3>
+  <a href="{% url 'users:admin_dashboard' %}" class="btn btn-outline-primary" data-bs-toggle="tooltip" title="Admin Dashboard">
+      <i class="bi bi-speedometer2"></i> Dashboard
+  </a>
+  <a href="{% url 'core:list' model_name='employee' %}" class="btn btn-outline-primary" data-bs-toggle="tooltip" title="Manage Employees">
+      <i class="bi bi-people-fill"></i> Manage Employees
+  </a>
+  <a href="{% url 'core:list' model_name='product' %}" class="btn btn-outline-primary" data-bs-toggle="tooltip" title="Manage Products">
+      <i class="bi bi-box"></i> Manage Products
+  </a>
+  <a href="{% url 'pos:list' model_name='sale' %}" class="btn btn-outline-primary" data-bs-toggle="tooltip" title="Manage Sales">
+      <i class="bi bi-cart"></i> Manage Sales
+  </a>
+  <a href="{% url 'users:user_performance_report' %}" class="btn btn-outline-primary" data-bs-toggle="tooltip" title="Performance Report">
+      <i class="bi bi-bar-chart-line"></i> Performance Report
+  </a>
+  <a href="{% url 'users:user_activity_report' %}" class="btn btn-outline-primary" data-bs-toggle="tooltip" title="Activity Report">
+      <i class="bi bi-clipboard-data"></i> Activity Report
+  </a>
+  <a href="{% url 'admin:index' %}" class="btn btn-outline-primary" data-bs-toggle="tooltip" title="Django Admin Functions">
+      <i class="bi bi-tools"></i> Admin Functionality
+  </a>
+</div>

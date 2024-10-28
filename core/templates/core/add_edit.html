@@ -12,6 +12,8 @@
 {% block content %}
     <div class="container">
         <h1>{% if is_edit %}Edit {{ model_name|capfirst }}{% else %}Add {{ model_name|capfirst }}{% endif %}</h1>
+        {% debug %}
+
 
         <form method="post" action="{% if is_edit %}{% url 'core:edit' model_name=model_name pk=object.pk %}{% else %}{% url 'core:add' model_name=model_name %}{% endif %}">
             {% csrf_token %}

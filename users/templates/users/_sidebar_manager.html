@@ -1,9 +1,21 @@
 <div class="sidebar">
-    <h3>Manager Navigation</h3>
-    <a href="{% url 'users:manager_dashboard' %}" class="btn btn-outline-secondary">Dashboard</a>
-    <a href="{% url 'core:employee_list' %}" class="btn btn-outline-secondary">Manage Employees</a>
-    <a href="{% url 'core:product_list' %}" class="btn btn-outline-secondary">Manage Products</a> 
-    <a href="{% url 'pos:sale_list' %}" class="btn btn-outline-secondary">View Sales</a>
-    <a href="{% url 'users:user_performance_report' %}" class="btn btn-outline-secondary">Performance Report</a>
-    <a href="{% url 'users:user_activity_report' %}" class="btn btn-outline-secondary">Activity Report</a>
-  </div>
+  <h3 class="sidebar-title">Manager Navigation</h3>
+  <a href="{% url 'users:manager_dashboard' %}" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Manager Dashboard">
+      <i class="bi bi-speedometer2"></i> Dashboard
+  </a>
+  <a href="{% url 'core:employee_list' %}" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Manage Employees">
+      <i class="bi bi-people-fill"></i> Manage Employees
+  </a>
+  <a href="{% url 'core:product_list' %}" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Manage Products">
+      <i class="bi bi-box"></i> Manage Products
+  </a>
+  <a href="{% url 'pos:sale_list' %}" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="View Sales">
+      <i class="bi bi-cart"></i> View Sales
+  </a>
+  <a href="{% url 'users:user_performance_report' %}" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Performance Report">
+      <i class="bi bi-bar-chart-line"></i> Performance Report
+  </a>
+  <a href="{% url 'users:user_activity_report' %}" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Activity Report">
+      <i class="bi bi-clipboard-data"></i> Activity Report
+  </a>
+</div>

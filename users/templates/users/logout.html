@@ -1,7 +1,17 @@
 {% extends 'users/base.html' %}
+
 {% block title %}Logout{% endblock %}
 {% block header %}Logout{% endblock %}
+
 {% block content %}
-<h1>Logout</h1>
-<p>You have been logged out. <a href="{% url 'users:login' %}">Login again</a>.</p>
+    <div class="container">
+        <h1>Logout</h1>
+        <p>You have been logged out. Redirecting you to the login page...</p>
+    </div>
+
+    <script>
+        setTimeout(function() {
+            window.location.href = "{% url 'users:login' %}"; 
+        }, 3000);  // Redirect after 3 seconds
+    </script>
 {% endblock %}

@@ -1,43 +1,37 @@
 {% load static compress %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <title>Smart Retail - Inventory Management System</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'users/styles.css' %}">
-  <style>
-    /* Initially hide the content */
-    body > *:not(script) {
-      opacity: 0;
-    }
-  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
 </head>
 
 <body>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
-      <a class="navbar-brand" href="#">Smart Retail</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <a class="navbar-brand" href="#"><i class="bi bi-shop"></i> Smart Retail</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
           {% if user.is_authenticated %}
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'users:dashboard' %}">Dashboard</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'users:logout' %}">Logout</a>
-          </li>
+            <li class="nav-item" data-bs-toggle="tooltip" title="Dashboard">
+              <a class="nav-link" href="{% url 'users:dashboard' %}"><i class="bi bi-speedometer2"></i> Dashboard</a>
+            </li>
+            <li class="nav-item" data-bs-toggle="tooltip" title="Logout">
+              <a class="nav-link" href="{% url 'users:logout' %}"><i class="bi bi-box-arrow-right"></i> Logout</a>
+            </li>
           {% else %}
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'users:login' %}">Login</a>
-          </li>
+            <li class="nav-item" data-bs-toggle="tooltip" title="Login">
+              <a class="nav-link" href="{% url 'users:login' %}"><i class="bi bi-box-arrow-in-right"></i> Login</a>
+            </li>
           {% endif %}
         </ul>
       </div>
+      <button id="darkModeToggle" class="btn btn-sm btn-secondary ms-3">Dark Mode</button>
     </div>
   </nav>
 
@@ -48,33 +42,44 @@
       <hr class="my-4">
       <p>Streamline your retail operations with our comprehensive system.</p>
       {% if not user.is_authenticated %}
-      <a class="btn btn-primary btn-lg" href="{% url 'users:register' %}" role="button">Get Started</a>
+        <a class="btn btn-primary btn-lg" href="{% url 'users:register' %}" role="button">Get Started</a>
       {% endif %}
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-  integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-  crossorigin="anonymous"></script>
-  
+  <footer class="text-center mt-auto">
+    <p>&copy; 2023 Smart Retail</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   {% compress js %}
   <script>
-    // Function to fade in an element
+    // Dark mode toggle
+    const toggleButton = document.getElementById('darkModeToggle');
+    toggleButton.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+    });
+
+    // Tooltip initialization
+    document.addEventListener("DOMContentLoaded", function () {
+      const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+      tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+        new bootstrap.Tooltip(tooltipTriggerEl);
+      });
+    });
+
+    // Fade-in effect
     function fadeIn(element, delay) {
       setTimeout(() => {
         element.style.transition = "opacity 0.5s ease-in-out";
         element.style.opacity = 1;
       }, delay);
     }
-
-    // Get all elements to fade in
     const elements = document.querySelectorAll('body > *:not(script)');
-
-    // Fade in elements with increasing delay
     let delay = 0;
     elements.forEach(element => {
       fadeIn(element, delay);
-      delay += 200; // Increase delay for each element
+      delay += 200;
     });
   </script>
   {% endcompress %}
