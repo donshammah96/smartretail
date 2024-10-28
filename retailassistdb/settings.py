@@ -115,6 +115,7 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "core/static"),
     os.path.join(BASE_DIR, "pos/static"),
+    os.path.join(BASE_DIR, "users/static"),
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")  # Heroku collects static files here
@@ -198,7 +199,7 @@ if DEBUG:
 
 if os.getenv('DJANGO_DEVELOPMENT') == 'True':
     INSTALLED_APPS += ['debug_toolbar', 'silk']
-    MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
+    MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware', 'silk.middleware.SilkyMiddleware']
 
 ROOT_URLCONF = "retailassistdb.urls"
 
@@ -244,3 +245,6 @@ SESSION_ENGINE = "django.contrib.sessions.backends.db"  # Use database-backed se
 SESSION_COOKIE_AGE = 3600  # Session timeout in seconds (e.g., 1 hour)
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Keep session even if the browser is closed
 SESSION_SAVE_EVERY_REQUEST = True  # Save session data on every request
+
+SILKY_PYTHON_PROFILER = True
+SILKY_PYTHON_PROFILER_BINARY = True
