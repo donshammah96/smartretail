@@ -197,7 +197,7 @@ if DEBUG:
     SILKY_PYTHON_PROFILER_BINARY = True
 
 if os.getenv('DJANGO_DEVELOPMENT') == 'True':
-    INSTALLED_APPS += ['debug_toolbar']
+    INSTALLED_APPS += ['debug_toolbar', 'silk']
     MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
 
 ROOT_URLCONF = "retailassistdb.urls"
