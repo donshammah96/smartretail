@@ -50,7 +50,11 @@ django-compressor==4.3
 django-phonenumber-field==8.0.0
 djangorestframework==3.15.2
 djangorestframework-simplejwt==5.3.1
+<<<<<<< HEAD
 django-silk==5.2.0
+=======
+django-silk==4.1.0
+>>>>>>> b204a0a (Add django-silk and conditionally include it in development)
 edx-downloader==1.0.3
 emoji==2.12.1
 et-xmlfile==1.1.0
