@@ -136,8 +136,20 @@ SECRET_KEY = os.getenv("SECRET_KEY", "your-default-secret-key")
 # Allowed hosts
 ALLOWED_HOSTS = ["smartretail-df93cdb16bd0.herokuapp.com", "localhost", "127.0.0.1"]
 
-DATABASES = {"default": dj_database_url.config(default=os.environ.get("JAWSDB_URL"))}
+# Database configuration
+DATABASES = {
+    "default": dj_database_url.config(
+        default=os.environ.get("JAWSDB_URL"),
+        conn_max_age=600,
+        ssl_require=True,
+    )
+}
 
+# Add the OPTIONS dictionary directly within the DATABASES setting
+DATABASES["default"]["OPTIONS"] = {
+    "init_command": "SET sql_mode='STRICT_TRANS_TABLES'"
+}
+   
 DATABASES["default"]["TEST"] = {
     "MIRROR": "default",
 }
@@ -149,8 +161,6 @@ INSTALLED_APPS = [
     "pos",
     "users",
     "phonenumber_field",
-    "debug_toolbar",
-    "silk",
     "compressor",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -161,7 +171,7 @@ INSTALLED_APPS = [
 
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 
-if DEBUG:
+if DEBUG or os.getenv("DJANGO_DEVELOPMENT") == "True":
     if "debug_toolbar" not in INSTALLED_APPS:
         INSTALLED_APPS += [
             "debug_toolbar",
@@ -181,10 +191,6 @@ if DEBUG:
     # Additional configuration for silk
     SILKY_PYTHON_PROFILER = True
     SILKY_PYTHON_PROFILER_BINARY = True
-
-if os.getenv('DJANGO_DEVELOPMENT') == 'True':
-    INSTALLED_APPS += ['debug_toolbar', 'silk']
-    MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware', 'silk.middleware.SilkyMiddleware']
 
 ROOT_URLCONF = "retailassistdb.urls"
 
@@ -230,3 +236,5 @@ SESSION_ENGINE = "django.contrib.sessions.backends.db"
 SESSION_COOKIE_AGE = 3600
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_SAVE_EVERY_REQUEST = True
+
+LOGIN_REDIRECT_URL = 'users:dashboard'

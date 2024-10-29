@@ -11,6 +11,94 @@ from django.db.models import Sum
 import logging
 import json
 from django.views import View
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import TemplateView
+from django.core.cache import cache
+from .models import UserStats
+from django.core.exceptions import ObjectDoesNotExist
+
+# Mixin to fetch role-based stats data
+class RoleStatsMixin:
+    def get_stats(self):
+        # Identify the role of the current user
+        user_role = self.request.user.role
+        # Define a unique cache key based on the user role
+        cache_key = f"{user_role}_stats"
+        # Try to retrieve the stats from the cache
+        stats = cache.get(cache_key)
+
+        # If cache is empty, fetch stats from the database
+        if not stats:
+            if user_role == 'admin':
+                stats = self.get_admin_stats()
+            elif user_role == 'manager':
+                stats = self.get_manager_stats()
+            elif user_role == 'employee':
+                stats = self.get_employee_stats()
+            # Store stats in the cache for 15 minutes
+            cache.set(cache_key, stats, timeout=60*15)
+
+        return stats
+
+    def get_admin_stats(self):
+        # Fetch data relevant to admin users
+        return UserStats.objects.admin_stats()
+
+    def get_manager_stats(self):
+        # Fetch data relevant to manager users
+        return UserStats.objects.manager_stats()
+
+    def get_employee_stats(self):
+        # Fetch data relevant to employee users
+        return UserStats.objects.employee_stats()
+
+
+# Admin Dashboard
+class AdminDashboardView(LoginRequiredMixin, RoleStatsMixin, TemplateView):
+    template_name = 'users/dashboard.html'
+
+    def get_context_data(self, **kwargs):
+        # Add admin-specific stats to the context
+        context = super().get_context_data(**kwargs)
+        context['stats'] = self.get_stats()
+        return context
+
+
+# Manager Dashboard
+class ManagerDashboardView(LoginRequiredMixin, RoleStatsMixin, TemplateView):
+    template_name = 'users/dashboard.html'
+
+    def get_context_data(self, **kwargs):
+        # Add manager-specific stats and chart data to the context
+        context = super().get_context_data(**kwargs)
+        context['stats'] = self.get_stats()
+        context['chart_data'] = self.get_chart_data()
+        return context
+
+    def get_chart_data(self):
+        # Calculate or retrieve chart data for managers
+        return {
+            "labels": ['Jan', 'Feb', 'Mar', 'Apr'],
+            "data": [10, 20, 30, 40]
+        }
+
+
+# Employee Dashboard
+class EmployeeDashboardView(LoginRequiredMixin, RoleStatsMixin, TemplateView):
+    template_name = 'users/dashboard.html'
+
+    def get_context_data(self, **kwargs):
+        # Add employee-specific chart data to the context
+        context = super().get_context_data(**kwargs)
+        context['chart_data'] = self.get_chart_data()
+        return context
+
+    def get_chart_data(self):
+        # Calculate or retrieve chart data for employees
+        return {
+            "labels": ['Jan', 'Feb', 'Mar', 'Apr'],
+            "data": [15, 25, 35, 45]
+        }
 
 # Get an instance of a logger
 logger = logging.getLogger(
@@ -20,19 +108,12 @@ logger = logging.getLogger(
 def home(request):
     """
     View for the homepage.
-    Redirects logged-in users to their respective dashboards.
+    Redirects logged-in users to the main dashboard.
     """
     if request.user.is_authenticated:
-        # Redirect based on user role
-        if request.user.role == 'employee':
-            return redirect('users:employee_dashboard')
-        elif request.user.role == 'manager':
-            return redirect('users:manager_dashboard')
-        elif request.user.role == 'admin':
-            return redirect('users:admin_dashboard')
-        else:
-            return redirect('users:dashboard')  # Default redirect
+        return redirect('users:dashboard')  # Redirect all authenticated users to the main dashboard
 
+    # Render the home page for non-authenticated users
     context = {
         "user": request.user,
     }
@@ -59,7 +140,6 @@ from pos.models import Sale, Inventory
 
 # Custom decorator for checking user roles (supports list or single role)
 
-
 def role_required(roles):
     if not isinstance(roles, list):
         roles = [roles]
@@ -74,6 +154,17 @@ def role_required(roles):
 
     return decorator
 
+@login_required
+def dashboard(request):
+    """
+    Redirects user to the appropriate dashboard based on their role.
+    """
+    role_redirects = {
+        "admin": AdminDashboardView.as_view(),
+        "manager": ManagerDashboardView.as_view(),
+        "employee": EmployeeDashboardView.as_view(),
+    }
+    return redirect(role_redirects.get(request.user.role, "users:profile"))
 
 @login_required
 @role_required(["employee", "admin", "manager"])
@@ -130,155 +221,12 @@ def notifications_admin(request):
     notifications = Notification.objects.all().order_by("-date")
     return render(request, "users/notifications.html", {"notifications": notifications})
 
-
-@login_required
-def dashboard(request):
-    # Redirect to the appropriate dashboard based on user role
-    role_redirects = {
-        "admin": "users:admin_dashboard",
-        "manager": "users:manager_dashboard",
-        "employee": "users:employee_dashboard",
-    }
-    return redirect(role_redirects.get(request.user.role, "users:profile"))
-
-
-@role_required("admin")
-def admin_dashboard(request):
-    """
-    View for the admin dashboard.
-    Displays overall system statistics and performance data.
-    """
-    try:
-        total_users = CustomUser.objects.count()
-        total_employees = CustomUser.objects.filter(role="employee").count()
-        total_sales = Sale.objects.count()  # No need for select_related here
-
-        # Sample performance data (replace with actual data)
-        performance_labels = json.dumps(["January", "February", "March"])
-        performance_data = json.dumps([10, 20, 30])
-
-        context = {
-            "total_users": total_users,
-            "total_employees": total_employees,
-            "total_sales": total_sales,
-            "performance_labels": performance_labels,
-            "performance_data": performance_data,
-        }
-    except DatabaseError as e:
-        messages.error(request, "Error retrieving admin data.")
-        context = {}  # Provide an empty context in case of error
-
-    return render(request, "users/dashboard.html", context)
-
-
-
-@method_decorator(login_required, name='dispatch')  # Apply login_required to the class
-@method_decorator(role_required("manager"), name='dispatch')  # Apply role_required to the class
-class ManagerDashboardView(View):  # Use a class-based view
-    """
-    View for the manager dashboard.
-    Displays employee, sales, and performance data.
-    """
-    def get(self, request):
-        try:
-            total_employees = CustomUser.objects.filter(role="employee").count()
-            total_sales = Sale.objects.filter(employee__user__role="employee").count()
-
-            employee = Employee.objects.get(user_id=request.user.id)  # Use get instead of select_related
-            individual_sales = employee.total_sales
-
-            # Generate monthly performance data (example: monthly sales)
-            monthly_sales = (
-                Sale.objects.filter(employee__user__role="employee")
-                .annotate(month=Sale.date.month)  # Extract month from Sale.date
-                .values("month")
-                .annotate(total_sales=Sum("amount"))
-                .order_by("month")
-            )
-
-            performance_labels = [
-                datetime(1900, sale["month"], 1).strftime("%B") for sale in monthly_sales
-            ]
-            performance_data = [sale["total_sales"] for sale in monthly_sales]
-
-            context = {
-                "total_employees": total_employees,
-                "total_sales": total_sales,
-                "individual_sales": individual_sales,
-                "performance_labels": json.dumps(performance_labels),
-                "performance_data": json.dumps(performance_data),
-            }
-        except Employee.DoesNotExist:
-            messages.error(request, "No employee data found for the current manager.")
-            context = {  # Provide default values in case of Employee.DoesNotExist
-                "total_employees": 0,
-                "total_sales": 0,
-                "individual_sales": 0,
-                "performance_labels": json.dumps([]),
-                "performance_data": json.dumps([]),
-            }
-             # Generate stats data for the manager
-            manager_stats = [
-                {'label': 'Total Employees', 'value': total_employees},
-                {'label': 'Total Sales', 'value': total_sales},
-                {'label': 'Your Sales', 'value': individual_sales},
-            ]
-        except DatabaseError:
-            messages.error(
-                request, "An error occurred while retrieving data. Please try again later."
-            )
-            context = {  # Provide default values in case of DatabaseError
-                "total_employees": 0,
-                "total_sales": 0,
-                "individual_sales": 0,
-                "performance_labels": json.dumps([]),
-                "performance_data": json.dumps([]),
-                'stats': manager_stats,  # Pass the stats data
-                'labels': json.dumps(performance_labels),  # Pass the chart labels (JSON encoded)
-                'data': json.dumps(performance_data),  # Pass the chart data (JSON encoded)
-            }
-
-        return render(request, "users/dashboard.html", context)
-
-@role_required("employee")
-def employee_dashboard(request):
-    """
-    View for the employee dashboard.
-    Displays employee performance data.
-    """
-    try:
-        employee = Employee.objects.get(user=request.user)
-        employee_name = employee.user.get_full_name()
-
-        # Generate performance data (example with sales)
-        sales = Sale.objects.filter(employee=employee)  # Assuming you have a Sale model
-        total_sales = sum(sale.final_price for sale in sales)
-        performance_data = [total_sales]  # Example data
-        performance_labels = ["Total Sales"]  # Example labels
-
-        context = {
-            "employee_name": employee_name,
-            "performance_labels": json.dumps(performance_labels),
-            "performance_data": json.dumps(performance_data),
-            "labels": json.dumps(performance_labels),  # Pass the chart labels (JSON encoded)
-            "data": json.dumps(performance_data), 
-        }
-    except Employee.DoesNotExist:
-        messages.error(request, "Employee data not found.")
-        context = {
-            "employee_name": "",
-            "performance_labels": json.dumps([]),
-            "performance_data": json.dumps([]),
-        }
-
-    return render(request, "users/dashboard.html", context)
-
 @role_required(["admin", "manager"])
 def employee_list(request):
     employees = CustomUser.objects.filter(role="employee").select_related(
         "employee"
     )
-    return render(request, "core/employees_list.html", {"employees": employees})
+    return render(request, "core/list_detail.html", {"employees": employees, "model_name": "employee"})
 
 
 @role_required(["admin", "manager"])

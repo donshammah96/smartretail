@@ -1,15 +1,12 @@
 <div class="sidebar">
   <h3 class="sidebar-title">Manager Navigation</h3>
-  <a href="{% url 'users:manager_dashboard' %}" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Manager Dashboard">
-      <i class="bi bi-speedometer2"></i> Dashboard
-  </a>
-  <a href="{% url 'core:employee_list' %}" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Manage Employees">
+  <a href="{% url 'core:list' model_name='employee' %}" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Manage Employees">
       <i class="bi bi-people-fill"></i> Manage Employees
   </a>
-  <a href="{% url 'core:product_list' %}" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Manage Products">
+  <a href="{% url 'core:list' model_name='product' %}" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Manage Products">
       <i class="bi bi-box"></i> Manage Products
   </a>
-  <a href="{% url 'pos:sale_list' %}" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="View Sales">
+  <a href="{% url 'pos:list' model_name='sale' %}" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="View Sales">
       <i class="bi bi-cart"></i> View Sales
   </a>
   <a href="{% url 'users:user_performance_report' %}" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Performance Report">
