@@ -3,10 +3,10 @@
   <a href="{% url 'users:employee_profile' %}" class="btn btn-outline-success" data-bs-toggle="tooltip" title="View Profile">
       <i class="bi bi-person-circle"></i> Profile
   </a>
-  <a href="{% url 'pos:sale_add' %}" class="btn btn-outline-success" data-bs-toggle="tooltip" title="Add Sale">
+  <a href="{% url 'pos:add' model_name='sale' %}" class="btn btn-outline-success" data-bs-toggle="tooltip" title="Add Sale">
       <i class="bi bi-plus-circle"></i> Add Sale
   </a>
-  <a href="{% url 'pos:sale_list' %}" class="btn btn-outline-success" data-bs-toggle="tooltip" title="View Sales">
+  <a href="{% url 'pos:list' model_name='sale' %}" class="btn btn-outline-success" data-bs-toggle="tooltip" title="View Sales">
       <i class="bi bi-cart-check"></i> View Sales
   </a>
 </div>

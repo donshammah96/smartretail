@@ -106,3 +106,56 @@ class Notification(models.Model):
 
     class Meta:
         ordering = ['-timestamp']
+
+class UserStatsManager(models.Manager):
+    def admin_stats(self):
+        return [
+            {
+                'label': 'Total Users',
+                'value': CustomUser.objects.count(),
+            },
+            {
+                'label': 'Total Employees',
+                'value': CustomUser.objects.filter(role='employee').count(),
+            },
+            {
+                'label': 'Total Sales',
+                'value': Sale.objects.count(),
+            },
+        ]
+
+    def manager_stats(self):
+        # Get the manager's Employee object
+        employee = Employee.objects.get(user_id=self.instance.id)
+
+        return [
+            {
+                'label': 'Total Employees',
+                'value': CustomUser.objects.filter(role='employee').count(),
+            },
+            {
+                'label': 'Total Sales',
+                'value': Sale.objects.filter(employee__user__role="employee").count(),
+            },
+            {
+                'label': 'Your Sales',
+                'value': employee.total_sales,
+            },
+        ]
+
+    def employee_stats(self):
+        return [
+            {
+                'label': 'Total Sales',
+                'value': Sale.objects.filter(employee__user=self.instance).count(),
+            },
+            # Add more employee-specific stats here
+        ]
+
+
+class UserStats(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='stats')
+    objects = UserStatsManager()
+
+    def __str__(self):
+        return f"Stats for {self.user.username}"
