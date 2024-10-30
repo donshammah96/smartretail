@@ -1,4 +1,4 @@
-{% extends 'users/base.html' %}
+{% extends 'users/layout.html' %}
 {% load static %}
 {% block title %}Manager Dashboard{% endblock %}
 {% block header %}Manager Dashboard{% endblock %}
@@ -13,18 +13,20 @@
         <h3>Manager Menu</h3>
         
         <!-- Employee Management Section -->
-        <button class="btn btn-primary" data-url="{% url 'users:employee_list' %}" onclick="location.href=this.getAttribute('data-url')">Manage Employees</button>
+        <button class="btn btn-primary" data-url="{% url 'core:list' model_name='employee' %}" onclick="location.href=this.getAttribute('data-url')">Manage Employees</button>
         
         <!-- Sales Tracking Section -->
-        <button class="btn btn-primary" data-url="{% url 'pos:sales_report' %}" onclick="location.href=this.getAttribute('data-url')">Sales Reports</button>
+        <button class="btn btn-primary" data-url="{% url 'pos:list' model_name='sales_report' %}" onclick="location.href=this.getAttribute('data-url')">Sales Reports</button>
         
         <!-- Performance Reports Section -->
         <button class="btn btn-primary" data-url="{% url 'users:user_performance_report' %}" onclick="location.href=this.getAttribute('data-url')">Performance Reports</button>
 
         <!-- Core Access for Inventory and Product Management -->
-        <button class="btn btn-primary" data-url="{% url 'core:product_list' %}" onclick="location.href=this.getAttribute('data-url')">Manage Products</button>
-        <button class="btn btn-primary" data-url="{% url 'pos:inventory_list' %}" onclick="location.href=this.getAttribute('data-url')">Inventory Management</button>
+        <button class="btn btn-primary" data-url="{% url 'core:list' model_name='product' %}" onclick="location.href=this.getAttribute('data-url')">Manage Products</button>
+
+        <button class="btn btn-primary" data-url="{% url 'pos:list' model_name='inventory' %}" onclick="location.href=this.getAttribute('data-url')">Inventory Management</button>
         
+        <button class="btn btn-primary" data-url="{% url 'pos:list' model_name='sale' %}" onclick="location.href=this.getAttribute('data-url')">Sales Management</button>
         <!-- Logout Button -->
         <button class="btn btn-secondary mt-3" data-url="{% url 'users:logout' %}" onclick="location.href=this.getAttribute('data-url')">Logout</button>
     </div>

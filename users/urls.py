@@ -13,13 +13,15 @@ urlpatterns = [
     path("profile/edit/", views.edit_profile, name="edit_profile"),
     path("profile/change_password/", views.change_password, name="change_password"),
     path("profile/delete/", views.delete_profile, name="delete_profile"),
+    path("user_performance_report/", views.user_performance_report, name="user_performance_report"),
     # Dashboard URLs
-    path("dashboard/admin/", AdminDashboardView.as_view(), name="dashboard"),
-    path("dashboard/manager/", ManagerDashboardView.as_view(), name="dashboard"),
-    path("dashboard/employee/", EmployeeDashboardView.as_view(), name="dashboard"),
+     path("dashboard/", views.dashboard, name="dashboard"),
+    path("dashboard/admin/", AdminDashboardView.as_view(), name="manager_dashboard"),
+    path("dashboard/manager/", ManagerDashboardView.as_view(), name="manager_dashboard"),
+    path("dashboard/employee/", EmployeeDashboardView.as_view(), name="employee_dashboard"),
     # URLs for both admin and manager
     path(
-        "employees/",
+        "employee/",
         include(
             [
                 path("", views.employee_list, name="employee_list"),
