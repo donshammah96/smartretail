@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django import forms
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger 
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib import messages
 from pos.models import Sale
 import logging
@@ -111,56 +111,16 @@ MODEL_FORM_MAPPING = {
 }
 
 MODEL_TEMPLATE_MAPPING = {
-    "product": (
-        Product, 
-        "core/list_detail.html", 
-        "core/add_edit.html"
-        ),
-    "category": (
-        Category, 
-        "core/list_detail.html", 
-        "core/add_edit.html"
-        ),
-    "supplier": (
-        Supplier, 
-        "core/list_detail.html", 
-        "core/add_edit.html"
-        ),
-    "revenue_report": (
-        RevenueReport,
-        "core/list_detail.html", 
-        "core/add_edit.html"
-    ),
-    "expense_report": (
-        ExpenseReport,
-        "core/list_detail.html", 
-        "core/add_edit.html"
-    ),
-    "data_analytics": (
-        DataAnalytics,
-        "core/list_detail.html", 
-        "core/add_edit.html"
-    ),
-    "customer": (
-        Customer, 
-        "core/list_detail.html", 
-        "core/add_edit.html"
-        ),
-    "employee": (
-        Employee, 
-        "core/list_detail.html", 
-        "core/add_edit.html"
-        ),
-    "shift": (
-        Shift, 
-        "core/list_detail.html", 
-        "core/add_edit.html"
-    ),
-    "sale": (
-        Sale, 
-        "core/list_detail.html", 
-        "core/add_edit.html"
-        ),
+    "product": (Product, "core/list_detail.html", "core/add_edit.html"),
+    "category": (Category, "core/list_detail.html", "core/add_edit.html"),
+    "supplier": (Supplier, "core/list_detail.html", "core/add_edit.html"),
+    "revenue_report": (RevenueReport, "core/list_detail.html", "core/add_edit.html"),
+    "expense_report": (ExpenseReport, "core/list_detail.html", "core/add_edit.html"),
+    "data_analytics": (DataAnalytics, "core/list_detail.html", "core/add_edit.html"),
+    "customer": (Customer, "core/list_detail.html", "core/add_edit.html"),
+    "employee": (Employee, "core/list_detail.html", "core/add_edit.html"),
+    "shift": (Shift, "core/list_detail.html", "core/add_edit.html"),
+    "sale": (Sale, "core/list_detail.html", "core/add_edit.html"),
 }
 
 # Get an instance of a logger
@@ -177,6 +137,7 @@ def my_view(request):
         # Log the error
         logger.error(f"An error occurred: {e}")
 
+
 def index(request):
     # Check if the session key 'visits' exists
     if "visits" in request.session:
@@ -191,6 +152,7 @@ def index(request):
 
     return render(request, "core/dashboard.html", {"visits": visits})
 
+
 def add_view(request, model_name):
     """
     Generic view for adding new objects to the CORE system.
@@ -203,8 +165,10 @@ def add_view(request, model_name):
             if form.is_valid():
                 new_object = form.save()
                 if request.is_ajax():
-                    return JsonResponse({"success": True, 'pk': new_object.pk})
-                return redirect(reverse(f"core:{model_name}_detail", kwargs={'pk': new_object.pk}))
+                    return JsonResponse({"success": True, "pk": new_object.pk})
+                return redirect(
+                    reverse(f"core:{model_name}_detail", kwargs={"pk": new_object.pk})
+                )
             else:
                 if request.is_ajax():
                     return JsonResponse({"success": False, "errors": form.errors})
@@ -221,15 +185,18 @@ def add_view(request, model_name):
     except TypeError as e:
         logger.error(f"Invalid model name in add_view: {model_name}, Error: {e}")
         messages.error(request, f"Invalid model name: {model_name}")
-        return redirect('core:dashboard')
-    
+        return redirect("core:dashboard")
+
+
 def edit_view(request, model_name, pk):
     """
     Generic view for editing existing objects in the CORE system.
     Handles form submission and AJAX requests.
     """
     try:
-        model, form_class = EDIT_FORM_MAPPING.get(model_name)  # Get both model and form class
+        model, form_class = EDIT_FORM_MAPPING.get(
+            model_name
+        )  # Get both model and form class
         instance = get_object_or_404(model, pk=pk)
         if request.method == "POST":
             form = form_class(request.POST, instance=instance)
@@ -254,8 +221,9 @@ def edit_view(request, model_name, pk):
     except TypeError as e:
         logger.error(f"Invalid model name in edit_view: {model_name}, Error: {e}")
         messages.error(request, f"Invalid model name: {model_name}")
-        return redirect('core:dashboard')
-    
+        return redirect("core:dashboard")
+
+
 def generic_list_view(request, model_name):
     """
     Generic view for displaying a paginated list of objects in the POS system.
@@ -264,29 +232,34 @@ def generic_list_view(request, model_name):
         model, list_template, _ = MODEL_TEMPLATE_MAPPING.get(model_name)
         objects = model.objects.all()
 
-        paginator = Paginator(objects, 10) 
-        page_number = request.GET.get('page')
+        paginator = Paginator(objects, 10)
+        page_number = request.GET.get("page")
 
         try:
             page_obj = paginator.get_page(page_number)
         except PageNotAnInteger:
             page_obj = paginator.get_page(1)
-  # If page is not an integer, deliver first page.
+        # If page is not an integer, deliver first page.
         except EmptyPage:
-            page_obj = paginator.get_page(paginator.num_pages)  # If page is out of range, deliver last page of results.
+            page_obj = paginator.get_page(
+                paginator.num_pages
+            )  # If page is out of range, deliver last page of results.
 
         context = {
-            model_name + '_list': page_obj,
-            'page_obj': page_obj,
-            'model_name': model_name,
-            'object_list': page_obj,  # Pass the Page object as 'object_list'
+            model_name + "_list": page_obj,
+            "page_obj": page_obj,
+            "model_name": model_name,
+            "object_list": page_obj,  # Pass the Page object as 'object_list'
         }
         return render(request, list_template, context)
 
     except TypeError as e:
-        logger.error(f"Invalid model name in generic_list_view: {model_name}, Error: {e}")
+        logger.error(
+            f"Invalid model name in generic_list_view: {model_name}, Error: {e}"
+        )
         messages.error(request, f"Invalid model name: {model_name}")
-        return redirect('core:dashboard')
+        return redirect("core:dashboard")
+
 
 def generic_detail_view(request, model_name, pk):
     """
@@ -301,9 +274,12 @@ def generic_detail_view(request, model_name, pk):
         return render(request, detail_template, context)
 
     except TypeError as e:
-        logger.error(f"Invalid model name in generic_detail_view: {model_name}, Error: {e}")
+        logger.error(
+            f"Invalid model name in generic_detail_view: {model_name}, Error: {e}"
+        )
         messages.error(request, f"Invalid model name: {model_name}")
-        return redirect('core:dashboard')
+        return redirect("core:dashboard")
+
 
 def about_view(request):
     """
@@ -311,11 +287,13 @@ def about_view(request):
     """
     return render(request, "core/about.html")
 
+
 def contact_view(request):
     """
     View for the contact page.
     """
     return render(request, "core/contact.html")
+
 
 def delete_view(request, model_name, pk):
     """
@@ -331,4 +309,4 @@ def delete_view(request, model_name, pk):
     except TypeError as e:
         logger.error(f"Invalid model name in delete_view: {model_name}, Error: {e}")
         messages.error(request, f"Invalid model name: {model_name}")
-        return redirect('core:dashboard')
+        return redirect("core:dashboard")

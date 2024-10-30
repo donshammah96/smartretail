@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.views import View
 from django import forms
 from django.utils import timezone
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger 
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib import messages
 import logging
 
@@ -44,7 +44,12 @@ from .forms import (
 
 
 MODEL_FORM_MAPPING = {
-    "transaction": (Transaction, TransactionForm, EditTransactionForm, CreateTransactionForm),
+    "transaction": (
+        Transaction,
+        TransactionForm,
+        EditTransactionForm,
+        CreateTransactionForm,
+    ),
     "sale": (Sale, SaleForm, EditSaleForm),
     "discount": (Discount, DiscountForm),
     "special_discount": (SpecialDiscount, SpecialDiscountForm),
@@ -66,7 +71,7 @@ MODEL_TEMPLATE_MAPPING = {
         "pos/add_edit.html",
     ),
     "discount": (
-        Discount, 
+        Discount,
         "pos/list_detail.html",
         "pos/add_edit.html",
     ),
@@ -94,7 +99,6 @@ MODEL_TEMPLATE_MAPPING = {
         Payment,
         "pos/list_detail.html",
         "pos/add_edit.html",
-
     ),
     "receipt": (
         Receipt,
@@ -187,9 +191,11 @@ def add_view(request, model_name):
         return render(request, "pos/add_edit.html", context)
 
     except TypeError as e:
-        logger.error(f"Invalid model name in add_view: {model_name}, Error: {e}")  # Log the error
+        logger.error(
+            f"Invalid model name in add_view: {model_name}, Error: {e}"
+        )  # Log the error
         messages.error(request, f"Invalid model name: {model_name}")
-        return redirect('pos:dashboard')
+        return redirect("pos:dashboard")
 
 
 def edit_view(request, model_name, pk):
@@ -221,9 +227,11 @@ def edit_view(request, model_name, pk):
         return render(request, "pos/add_edit.html", context)
 
     except TypeError as e:
-        logger.error(f"Invalid model name in add_view: {model_name}, Error: {e}")  # Log the error
+        logger.error(
+            f"Invalid model name in add_view: {model_name}, Error: {e}"
+        )  # Log the error
         messages.error(request, f"Invalid model name: {model_name}")
-        return redirect('pos:dashboard')
+        return redirect("pos:dashboard")
 
 
 def generic_list_view(request, model_name):
@@ -234,29 +242,33 @@ def generic_list_view(request, model_name):
         model, list_template, _ = MODEL_TEMPLATE_MAPPING.get(model_name)
         objects = model.objects.all()
 
-        paginator = Paginator(objects, 10) 
-        page_number = request.GET.get('page')
+        paginator = Paginator(objects, 10)
+        page_number = request.GET.get("page")
 
         try:
             page_obj = paginator.get_page(page_number)
         except PageNotAnInteger:
             page_obj = paginator.get_page(1)
-  # If page is not an integer, deliver first page.
+        # If page is not an integer, deliver first page.
         except EmptyPage:
-            page_obj = paginator.get_page(paginator.num_pages)  # If page is out of range, deliver last page of results.
+            page_obj = paginator.get_page(
+                paginator.num_pages
+            )  # If page is out of range, deliver last page of results.
 
         context = {
-            model_name + '_list': page_obj,
-            'page_obj': page_obj,
-            'model_name': model_name,
-            'object_list': page_obj,  # Pass the Page object as 'object_list'
+            model_name + "_list": page_obj,
+            "page_obj": page_obj,
+            "model_name": model_name,
+            "object_list": page_obj,  # Pass the Page object as 'object_list'
         }
         return render(request, list_template, context)
 
     except TypeError as e:
-        logger.error(f"Invalid model name in generic_list_view: {model_name}, Error: {e}")
+        logger.error(
+            f"Invalid model name in generic_list_view: {model_name}, Error: {e}"
+        )
         messages.error(request, f"Invalid model name: {model_name}")
-        return redirect('pos:dashboard')
+        return redirect("pos:dashboard")
 
 
 def generic_detail_view(request, model_name, pk):
@@ -272,9 +284,12 @@ def generic_detail_view(request, model_name, pk):
         return render(request, detail_template, context)
 
     except TypeError as e:
-        logger.error(f"Invalid model name in generic_detail_view: {model_name}, Error: {e}")
+        logger.error(
+            f"Invalid model name in generic_detail_view: {model_name}, Error: {e}"
+        )
         messages.error(request, f"Invalid model name: {model_name}")
-        return redirect('pos:dashboard')
+        return redirect("pos:dashboard")
+
 
 def delete_view(request, model_name, pk):
     """
@@ -283,11 +298,11 @@ def delete_view(request, model_name, pk):
     try:
         model, _, _ = MODEL_TEMPLATE_MAPPING.get(model_name)
         object = get_object_or_404(model, pk=pk)
-        
+
         object.delete()
         return redirect(reverse(f"pos:{model_name}_list"))
 
     except TypeError as e:
         logger.error(f"Invalid model name in delete_view: {model_name}, Error: {e}")
         messages.error(request, f"Invalid model name: {model_name}")
-        return redirect('pos:dashboard')
+        return redirect("pos:dashboard")

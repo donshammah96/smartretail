@@ -103,11 +103,7 @@ urlpatterns = [
                     {"model": "Sale"},
                     name="sale_detail",
                 ),
-                path(
-                    "add/", 
-                    views.add_view, 
-                    {"model_name": "sale"}, 
-                    name="sale_add"),
+                path("add/", views.add_view, {"model_name": "sale"}, name="sale_add"),
                 path(
                     "edit/<int:pk>/",
                     views.edit_view,

@@ -17,6 +17,7 @@ from django.core.cache import cache
 from .models import UserStats
 from django.core.exceptions import ObjectDoesNotExist
 
+
 # Mixin to fetch role-based stats data
 class RoleStatsMixin:
     def get_stats(self):
@@ -29,14 +30,14 @@ class RoleStatsMixin:
 
         # If cache is empty, fetch stats from the database
         if not stats:
-            if user_role == 'admin':
+            if user_role == "admin":
                 stats = self.get_admin_stats()
-            elif user_role == 'manager':
+            elif user_role == "manager":
                 stats = self.get_manager_stats()
-            elif user_role == 'employee':
+            elif user_role == "employee":
                 stats = self.get_employee_stats()
             # Store stats in the cache for 15 minutes
-            cache.set(cache_key, stats, timeout=60*15)
+            cache.set(cache_key, stats, timeout=60 * 15)
 
         return stats
 
@@ -55,55 +56,52 @@ class RoleStatsMixin:
 
 # Admin Dashboard
 class AdminDashboardView(LoginRequiredMixin, RoleStatsMixin, TemplateView):
-    template_name = 'users/dashboard.html'
+    template_name = "users/dashboard.html"
 
     def get_context_data(self, **kwargs):
         # Add admin-specific stats to the context
         context = super().get_context_data(**kwargs)
-        context['stats'] = self.get_stats()
+        context["stats"] = self.get_stats()
         return context
 
 
 # Manager Dashboard
 class ManagerDashboardView(LoginRequiredMixin, RoleStatsMixin, TemplateView):
-    template_name = 'users/dashboard.html'
+    template_name = "users/dashboard.html"
 
     def get_context_data(self, **kwargs):
         # Add manager-specific stats and chart data to the context
         context = super().get_context_data(**kwargs)
-        context['stats'] = self.get_stats()
-        context['chart_data'] = self.get_chart_data()
+        context["stats"] = self.get_stats()
+        context["chart_data"] = self.get_chart_data()
         return context
 
     def get_chart_data(self):
         # Calculate or retrieve chart data for managers
-        return {
-            "labels": ['Jan', 'Feb', 'Mar', 'Apr'],
-            "data": [10, 20, 30, 40]
-        }
+        return {"labels": ["Jan", "Feb", "Mar", "Apr"], "data": [10, 20, 30, 40]}
 
 
 # Employee Dashboard
 class EmployeeDashboardView(LoginRequiredMixin, RoleStatsMixin, TemplateView):
-    template_name = 'users/dashboard.html'
+    template_name = "users/dashboard.html"
 
     def get_context_data(self, **kwargs):
         # Add employee-specific chart data to the context
         context = super().get_context_data(**kwargs)
-        context['chart_data'] = self.get_chart_data()
+        context["stats"] = self.get_stats()
+        context["chart_data"] = self.get_chart_data()
         return context
 
     def get_chart_data(self):
         # Calculate or retrieve chart data for employees
-        return {
-            "labels": ['Jan', 'Feb', 'Mar', 'Apr'],
-            "data": [15, 25, 35, 45]
-        }
+        return {"labels": ["Jan", "Feb", "Mar", "Apr"], "data": [15, 25, 35, 45]}
+
 
 # Get an instance of a logger
 logger = logging.getLogger(
     "django"
 )  # Use the 'django' logger or a custom one like 'custom_logger'
+
 
 def home(request):
     """
@@ -111,13 +109,16 @@ def home(request):
     Redirects logged-in users to the main dashboard.
     """
     if request.user.is_authenticated:
-        return redirect('users:dashboard')  # Redirect all authenticated users to the main dashboard
+        return redirect(
+            "users:dashboard"
+        )  # Redirect all authenticated users to the main dashboard
 
     # Render the home page for non-authenticated users
     context = {
         "user": request.user,
     }
     return render(request, "users/home.html", context)
+
 
 def my_view(request):
     try:
@@ -140,6 +141,7 @@ from pos.models import Sale, Inventory
 
 # Custom decorator for checking user roles (supports list or single role)
 
+
 def role_required(roles):
     if not isinstance(roles, list):
         roles = [roles]
@@ -154,6 +156,7 @@ def role_required(roles):
 
     return decorator
 
+
 @login_required
 def dashboard(request):
     """
@@ -165,6 +168,7 @@ def dashboard(request):
         "employee": EmployeeDashboardView.as_view(),
     }
     return redirect(role_redirects.get(request.user.role, "users:profile"))
+
 
 @login_required
 @role_required(["employee", "admin", "manager"])
@@ -221,12 +225,15 @@ def notifications_admin(request):
     notifications = Notification.objects.all().order_by("-date")
     return render(request, "users/notifications.html", {"notifications": notifications})
 
+
 @role_required(["admin", "manager"])
 def employee_list(request):
-    employees = CustomUser.objects.filter(role="employee").select_related(
-        "employee"
+    employees = CustomUser.objects.filter(role="employee").select_related("employee")
+    return render(
+        request,
+        "core/list_detail.html",
+        {"employees": employees, "model_name": "employee"},
     )
-    return render(request, "core/list_detail.html", {"employees": employees, "model_name": "employee"})
 
 
 @role_required(["admin", "manager"])
@@ -282,12 +289,12 @@ def register_view(request):
                 messages.success(request, "Registration successful.")
 
                 # Redirect based on user role
-                if user.role == 'employee':
-                    return redirect('users:employee_dashboard')
-                elif user.role == 'manager':
-                    return redirect('users:manager_dashboard')
-                elif user.role == 'admin':
-                    return redirect('users:admin_dashboard')
+                if user.role == "employee":
+                    return redirect("users:employee_dashboard")
+                elif user.role == "manager":
+                    return redirect("users:manager_dashboard")
+                elif user.role == "admin":
+                    return redirect("users:admin_dashboard")
                 else:
                     return redirect("users:dashboard")  # Default redirect
 
@@ -299,6 +306,7 @@ def register_view(request):
         form = UserRegisterForm()
 
     return render(request, "users/register.html", {"form": form})
+
 
 def logout_view(request):
     log_user_activity(request.user, "logged out")
