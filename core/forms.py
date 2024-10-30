@@ -298,6 +298,7 @@ class CategoryForm(forms.ModelForm):
 
 # New Forms for Adding, Editing, and Deleting Instances
 
+
 class AddCategoryForm(forms.ModelForm):
     """
     Form for adding new Category instances.

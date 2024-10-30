@@ -11,12 +11,12 @@ from .models import CustomUser
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField(
         widget=forms.EmailInput(attrs={"class": "form-control"}),
-        help_text="Enter a valid email address."
+        help_text="Enter a valid email address.",
     )
     password1 = forms.CharField(
-        label="Password", 
+        label="Password",
         widget=forms.PasswordInput(attrs={"class": "form-control"}),
-        help_text="Your password must contain at least 8 characters."
+        help_text="Your password must contain at least 8 characters.",
     )
     password2 = forms.CharField(
         label="Confirm Password",
@@ -113,20 +113,20 @@ class UserLoginForm(AuthenticationForm):
 class CustomPasswordChangeForm(PasswordChangeForm):
     old_password = forms.CharField(
         widget=forms.PasswordInput(attrs={"class": "form-control"}),
-        label="Old Password"
+        label="Old Password",
     )
     new_password1 = forms.CharField(
         widget=forms.PasswordInput(attrs={"class": "form-control"}),
-        label="New Password"
+        label="New Password",
     )
     new_password2 = forms.CharField(
         widget=forms.PasswordInput(attrs={"class": "form-control"}),
-        label="Confirm New Password"
+        label="Confirm New Password",
     )
 
 
 class UserDeleteForm(forms.Form):
     confirm = forms.BooleanField(
         widget=forms.CheckboxInput(attrs={"class": "form-check-input"}),
-        label="Are you sure you want to delete your account?"
+        label="Are you sure you want to delete your account?",
     )

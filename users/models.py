@@ -6,6 +6,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 from django.db.models import Sum
 from django.core.validators import FileExtensionValidator
 
+
 class CustomUser(AbstractUser):
     """
     Custom user model extending the default AbstractUser.
@@ -18,7 +19,7 @@ class CustomUser(AbstractUser):
         ("manager", "Manager"),
         ("employee", "Employee"),
     )
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default="employee")
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default="admin")
     profile_picture = models.ImageField(
         upload_to="profile_pictures/", blank=True, null=True
     )
@@ -34,6 +35,7 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.username})"
+
 
 class Employee(CoreEmployee):
     """
@@ -56,6 +58,7 @@ class Employee(CoreEmployee):
     def get_full_name(self):
         return f"{self.user.first_name} {self.user.last_name}"
 
+
 class UserActivity(models.Model):
     """
     Model to track user activities.
@@ -72,8 +75,9 @@ class UserActivity(models.Model):
         return f"{self.user.username} - {self.action} - {self.timestamp}"
 
     class Meta:
-        ordering = ['-timestamp']
+        ordering = ["-timestamp"]
         verbose_name_plural = "User Activities"
+
 
 class TrainingResource(models.Model):
     """
@@ -85,11 +89,12 @@ class TrainingResource(models.Model):
     description = models.TextField(blank=True, null=True)
     file = models.FileField(
         upload_to="training_resources/",
-        validators=[FileExtensionValidator(['pdf', 'docx', 'pptx'])],
+        validators=[FileExtensionValidator(["pdf", "docx", "pptx"])],
     )
 
     def __str__(self):
         return self.title
+
 
 class Notification(models.Model):
     """
@@ -105,22 +110,23 @@ class Notification(models.Model):
         return self.title
 
     class Meta:
-        ordering = ['-timestamp']
+        ordering = ["-timestamp"]
+
 
 class UserStatsManager(models.Manager):
     def admin_stats(self):
         return [
             {
-                'label': 'Total Users',
-                'value': CustomUser.objects.count(),
+                "label": "Total Users",
+                "value": CustomUser.objects.count(),
             },
             {
-                'label': 'Total Employees',
-                'value': CustomUser.objects.filter(role='employee').count(),
+                "label": "Total Employees",
+                "value": CustomUser.objects.filter(role="employee").count(),
             },
             {
-                'label': 'Total Sales',
-                'value': Sale.objects.count(),
+                "label": "Total Sales",
+                "value": Sale.objects.count(),
             },
         ]
 
@@ -130,31 +136,33 @@ class UserStatsManager(models.Manager):
 
         return [
             {
-                'label': 'Total Employees',
-                'value': CustomUser.objects.filter(role='employee').count(),
+                "label": "Total Employees",
+                "value": CustomUser.objects.filter(role="employee").count(),
             },
             {
-                'label': 'Total Sales',
-                'value': Sale.objects.filter(employee__user__role="employee").count(),
+                "label": "Total Sales",
+                "value": Sale.objects.filter(employee__user__role="employee").count(),
             },
             {
-                'label': 'Your Sales',
-                'value': employee.total_sales,
+                "label": "Your Sales",
+                "value": employee.total_sales,
             },
         ]
 
     def employee_stats(self):
         return [
             {
-                'label': 'Total Sales',
-                'value': Sale.objects.filter(employee__user=self.instance).count(),
+                "label": "Total Sales",
+                "value": Sale.objects.filter(employee__user=self.instance).count(),
             },
             # Add more employee-specific stats here
         ]
 
 
 class UserStats(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='stats')
+    user = models.OneToOneField(
+        CustomUser, on_delete=models.CASCADE, related_name="stats"
+    )
     objects = UserStatsManager()
 
     def __str__(self):
