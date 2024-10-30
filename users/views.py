@@ -56,18 +56,22 @@ class RoleStatsMixin:
 
 # Admin Dashboard
 class AdminDashboardView(LoginRequiredMixin, RoleStatsMixin, TemplateView):
-    template_name = "users/dashboard.html"
+    template_name = "users/admin_dashboard.html"
 
     def get_context_data(self, **kwargs):
         # Add admin-specific stats to the context
         context = super().get_context_data(**kwargs)
         context["stats"] = self.get_stats()
+        context['chart_data'] = self.get_chart_data()
         return context
 
-
+    def get_chart_data(self):
+        # Calculate or retrieve chart data for managers
+        return {"labels": ["Jan", "Feb", "Mar", "Apr"], "data": [10, 20, 30, 40]}
+    
 # Manager Dashboard
 class ManagerDashboardView(LoginRequiredMixin, RoleStatsMixin, TemplateView):
-    template_name = "users/dashboard.html"
+    template_name = "users/manager_dashboard.html"
 
     def get_context_data(self, **kwargs):
         # Add manager-specific stats and chart data to the context
@@ -83,7 +87,7 @@ class ManagerDashboardView(LoginRequiredMixin, RoleStatsMixin, TemplateView):
 
 # Employee Dashboard
 class EmployeeDashboardView(LoginRequiredMixin, RoleStatsMixin, TemplateView):
-    template_name = "users/dashboard.html"
+    template_name = "users/employee_dashboard.html"
 
     def get_context_data(self, **kwargs):
         # Add employee-specific chart data to the context
@@ -159,16 +163,18 @@ def role_required(roles):
 
 @login_required
 def dashboard(request):
-    """
-    Redirects user to the appropriate dashboard based on their role.
-    """
-    role_redirects = {
-        "admin": AdminDashboardView.as_view(),
-        "manager": ManagerDashboardView.as_view(),
-        "employee": EmployeeDashboardView.as_view(),
-    }
-    return redirect(role_redirects.get(request.user.role, "users:profile"))
+    user_role = request.user.role  # Assuming you have a role attribute on your user model
 
+    if user_role == 'admin':
+        view = AdminDashboardView.as_view()
+    elif user_role == 'manager':
+        view = ManagerDashboardView.as_view()
+    elif user_role == 'employee':
+        view = EmployeeDashboardView.as_view()
+    else:
+        return redirect('users:home')
+
+    return view(request)
 
 @login_required
 @role_required(["employee", "admin", "manager"])
@@ -363,7 +369,6 @@ def edit_profile(request):
     return render(request, "users/edit_profile.html", {"form": form})
 
 
-@login_required
 def change_password(request):
     if request.method == "POST":
         form = CustomPasswordChangeForm(user=request.user, data=request.POST)

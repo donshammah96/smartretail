@@ -49,9 +49,10 @@
                 {% endfor %}
             </tbody>
         </table>
-
-        <a href="{% url 'core:add' model_name=model_name %}" class="btn btn-primary">Add New {{ model_name|capfirst }}</a>
-    </div>
+        <div class="button-container">
+            <a href="{% url 'core:add' model_name=model_name %}" class="btn btn-primary btn-block">Add New {{ model_name|capfirst }}</a>
+            <a href="{% url 'core:dashboard' %}" class="btn btn-secondary btn-block">Back to Dashboard</a>
+        </div>
 {% endblock %}
 
 {% block footer %}

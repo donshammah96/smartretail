@@ -111,6 +111,16 @@ class UserLoginForm(AuthenticationForm):
 
 
 class CustomPasswordChangeForm(PasswordChangeForm):
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if not CustomUser.objects.filter(email=email).exists():
+            raise forms.ValidationError("This email address does not exist.")
+        return email
+    
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={"class": "form-control"}),
+        label="Email Address",
+    )
     old_password = forms.CharField(
         widget=forms.PasswordInput(attrs={"class": "form-control"}),
         label="Old Password",

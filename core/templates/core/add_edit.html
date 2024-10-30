@@ -34,7 +34,10 @@
         </form>
 
         <div id="formErrors" class="alert alert-danger" style="display: none;"></div>
-        <a href="{% url 'core:list' model_name=model_name %}" class="btn btn-secondary">Back to List</a>
+        <div class="button-container">
+            <a href="{% url 'core:list' model_name=model_name %}" class="btn btn-secondary">Back to List</a>
+            <a href="{% url 'core:dashboard' %}" class="btn btn-secondary btn-block">Back to Dashboard</a>
+        </div>    
     </div>
 {% endblock %}
 
