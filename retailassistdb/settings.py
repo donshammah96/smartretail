@@ -238,3 +238,12 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_SAVE_EVERY_REQUEST = True
 
 LOGIN_REDIRECT_URL = 'users:dashboard'
+
+# MPESA API configurations
+"""
+MPESA_API_KEY = '7Y57vdAcsSpX1MRXmnr11j23FVNFps5CRnfoqRiPUeSSZAsK'
+MPESA_API_SECRET = 'ZZAvrSGOyoYyNO5bZS8C5gU42qKjtlrP2TfnsMjrQ5KNpp10mPKTOU6EItiWSZdG'
+MPESA_SHORTCODE = 'your_mpesa_shortcode'
+MPESA_PASSKEY = 'your_mpesa_passkey'
+MPESA_ENVIRONMENT = 'sandbox'  # or 'production'
+"""

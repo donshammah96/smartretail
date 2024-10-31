@@ -10,6 +10,8 @@ urlpatterns = [
     path("<str:model_name>/edit/<int:pk>/", views.edit_view, name="edit"),
     path("<str:model_name>/list/", views.generic_list_view, name="list"),
     path("<str:model_name>/detail/<int:pk>/", views.generic_detail_view, name="detail"),
+    path('mpesa/callback/', views.mpesa_callback, name='mpesa_callback'),
+    path('mpesa/confirmation/', views.mpesa_confirmation, name='mpesa_confirmation'),
     # Inventory URLs
     path(
         "inventory/",
