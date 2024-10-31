@@ -1,0 +1,29 @@
+{% extends 'pos/base.html' %}
+
+{% block title %}M-Pesa Payment Confirmation{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>M-Pesa Payment Confirmation</h1>
+    <form method="post" action="{% url 'mpesa_confirmation' %}">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="phone_number" class="form-label">Phone Number:</label>
+            <input type="text" id="phone_number" name="phone_number" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="amount" class="form-label">Amount:</label>
+            <input type="number" id="amount" name="amount" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="transaction_desc" class="form-label">Transaction Description:</label>
+            <input type="text" id="transaction_desc" name="transaction_desc" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="account_reference" class="form-label">Account Reference:</label>
+            <input type="text" id="account_reference" name="account_reference" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Confirm Payment</button>
+    </form>
+</div>
+{% endblock %}

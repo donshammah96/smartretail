@@ -5,9 +5,12 @@ from django.views import View
 from django import forms
 from django.utils import timezone
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 import logging
+import json
 
+from .services.mpesa_service import initiate_mpesa_payment
 from .models import (
     Transaction,
     Discount,
@@ -306,3 +309,109 @@ def delete_view(request, model_name, pk):
         logger.error(f"Invalid model name in delete_view: {model_name}, Error: {e}")
         messages.error(request, f"Invalid model name: {model_name}")
         return redirect("pos:dashboard")
+
+@csrf_exempt
+def mpesa_callback(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        result_code = data.get('Body', {}).get('stkCallback', {}).get('ResultCode')
+        checkout_request_id = data.get('Body', {}).get('stkCallback', {}).get('CheckoutRequestID')
+        callback_metadata = data.get('Body', {}).get('stkCallback', {}).get('CallbackMetadata', {}).get('Item', [])
+        
+        transaction_amount = None
+        transaction_time = None
+        mpesa_receipt_number = None
+
+        for item in callback_metadata:
+            if item.get('Name') == 'Amount':
+                transaction_amount = item.get('Value')
+            elif item.get('Name') == 'MpesaReceiptNumber':
+                mpesa_receipt_number = item.get('Value')
+            elif item.get('Name') == 'TransactionDate':
+                transaction_time = item.get('Value')
+
+        try:
+            payment = Payment.objects.get(mpesa_transaction_id=checkout_request_id)
+            if result_code == 0:
+                payment.amount = transaction_amount
+                payment.payment_date = transaction_time
+                payment.mpesa_status = 'Completed'
+                payment.mpesa_receipt_number = mpesa_receipt_number
+            else:
+                payment.mpesa_status = 'Failed'
+            payment.save()
+        except Payment.DoesNotExist:
+            if result_code == 0:
+                Payment.objects.create(
+                    mpesa_transaction_id=checkout_request_id,
+                    amount=transaction_amount,
+                    payment_date=transaction_time,
+                    method='M-Pesa',
+                    mpesa_status='Completed',
+                    mpesa_receipt_number=mpesa_receipt_number
+                )
+            else:
+                Payment.objects.create(
+                    mpesa_transaction_id=checkout_request_id,
+                    amount=transaction_amount,
+                    payment_date=transaction_time,
+                    method='M-Pesa',
+                    mpesa_status='Failed'
+                )
+
+        return JsonResponse({'ResultCode': 0, 'ResultDesc': 'Accepted'})
+    return JsonResponse({'ResultCode': 1, 'ResultDesc': 'Invalid Request Method'})
+
+@csrf_exempt
+def mpesa_confirmation(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        transaction_id = data.get('TransID')
+        transaction_amount = data.get('TransAmount')
+        transaction_time = data.get('TransTime')
+        phone_number = data.get('MSISDN')
+        account_reference = data.get('BillRefNumber')
+
+        try:
+            payment = Payment.objects.get(mpesa_transaction_id=transaction_id)
+            payment.amount = transaction_amount
+            payment.payment_date = transaction_time
+            payment.mpesa_status = 'Completed'
+            payment.save()
+        except Payment.DoesNotExist:
+            Payment.objects.create(
+                mpesa_transaction_id=transaction_id,
+                amount=transaction_amount,
+                payment_date=transaction_time,
+                method='M-Pesa',
+                mpesa_status='Completed',
+                phone_number=phone_number,
+                account_reference=account_reference
+            )
+
+        return JsonResponse({'ResultCode': 0, 'ResultDesc': 'Accepted'})
+    return JsonResponse({'ResultCode': 1, 'ResultDesc': 'Invalid Request Method'})
+
+def initiate_payment(request, transaction_id):
+    if request.method == 'POST':
+        phone_number = request.POST['phone_number']
+        amount = request.POST['amount']
+        transaction_desc = request.POST['transaction_desc']
+        account_reference = request.POST['account_reference']
+
+        response = initiate_mpesa_payment(phone_number, amount, account_reference, transaction_desc)
+        if response.get('ResponseCode') == '0':
+            payment = Payment.objects.create(
+                transaction_id=transaction_id,
+                method='M-Pesa',
+                amount=amount,
+                mpesa_transaction_id=response.get('CheckoutRequestID'),
+                mpesa_status='Pending'
+            )
+            messages.success(request, 'Payment initiated successfully.')
+            return redirect('payment_success')
+        else:
+            messages.error(request, 'Payment initiation failed.')
+            return redirect('payment_failure')
+
+    return render(request, 'initiate_payment.html')

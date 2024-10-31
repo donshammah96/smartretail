@@ -3,6 +3,7 @@ from django.db import models
 from django.apps import apps
 from django.db.models import Sum, Count
 from django.core.validators import MinValueValidator
+from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -91,12 +92,21 @@ class Purchase(models.Model):
     def save(self, *args, **kwargs):
         # Calculate total cost
         self.total_cost = self.cost_price_per_unit * self.quantity
-        super().save(*args, **kwargs)
+        # Check if there is enough stock before saving
+        if self.inventory.product.stock < self.quantity:
+            raise ValidationError(f"Not enough stock for {self.product.name}. Available stock: {self.inventory.product.stock}")
         # Update the inventory stock level
-        self.inventory.update_stock(
-            self.quantity, reason=f"Purchase: {self.quantity} units added"
-        )
+        try:
+            self.inventory.update_stock(
+                self.quantity, reason=f"Purchase: {self.quantity} units added"
+            )
+        except ValueError as e:
+            raise ValidationError(f"Error updating stock for {self.product.name}: {e}")
+        
+        super().save(*args, **kwargs)
 
+PAYMENT_METHOD_CHOICES = [("Cash", "Cash"), ("Card", "Card"), ("M-Pesa", "M-Pesa")]
+STATUS_CHOICES = [("Pending", "Pending"), ("Approved", "Approved"), ("Rejected", "Rejected")]
 
 class Transaction(models.Model):
     product = models.ForeignKey(
@@ -118,7 +128,7 @@ class Transaction(models.Model):
     )
     payment_method = models.CharField(
         max_length=50,
-        choices=[("Cash", "Cash"), ("Card", "Card"), ("M-Pesa", "M-Pesa")],
+        choices=PAYMENT_METHOD_CHOICES,
         default="Cash",
     )
     amount = models.DecimalField(
@@ -139,8 +149,9 @@ class Transaction(models.Model):
         self.amount = self.sales.aggregate(total=Sum("subtotal"))["total"] or 0.00
         self.save()
 
-    def calculate_loyalty_points(self):
-        self.points_earned = int(self.amount / 10)
+    # Calculate loyalty points with a helper function
+    def calculate_loyalty_points(self, loyalty_factor=10):
+        self.points_earned = int(self.amount / loyalty_factor)
         if self.customer:
             self.customer.add_loyalty_points(self.points_earned)
         self.save()
@@ -192,6 +203,13 @@ class Discount(models.Model):
     def __str__(self):
         return f"Discount {self.amount} from {self.valid_from} to {self.valid_until}"
 
+    def apply_discount(self, price):
+        """
+        Apply the discount to the given price.
+        """
+        if self.active and self.valid_from <= timezone.now() <= self.valid_until:
+            return max(price - self.amount, 0)
+        return price
 
 class SpecialDiscount(models.Model):
     product = models.ForeignKey(
@@ -213,6 +231,14 @@ class SpecialDiscount(models.Model):
     def __str__(self):
         return f"Discount {self.discount_percent}% on {self.product.name} until {self.valid_until}"
 
+    def apply_discount(self, price):
+        """
+        Apply the special discount to the given price.
+        """
+        if self.active and timezone.now().date() <= self.valid_until:
+            discount_amount = price * (self.discount_percent / 100)
+            return max(price - discount_amount, 0)
+        return price
 
 class StockAlert(models.Model):
     product = models.ForeignKey(
@@ -330,9 +356,18 @@ class Sale(models.Model):
         return f"Sale of {self.quantity} {self.product.name}"
 
     def save(self, *args, **kwargs):
+        # Check if there is enough stock before saving
+        if self.product.stock < self.quantity:
+            raise ValidationError(f"Not enough stock for {self.product.name}. Available stock: {self.product.stock}")
+
         self.subtotal = self.product.price * self.quantity
         self.calculate_final_price()
-        self.product.update_stock(-self.quantity)
+        
+        try:
+            self.product.update_stock(-self.quantity)
+        except ValidationError as e:
+             raise ValidationError(f"Error updating stock for {self.product.name}: {e}")
+
         super().save(*args, **kwargs)
 
     def calculate_final_price(self):
@@ -360,9 +395,25 @@ class Payment(models.Model):
     payment_date = models.DateTimeField(default=timezone.now)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
+    mpesa_transaction_id = models.CharField(max_length=100, null=True, blank=True)
+    mpesa_status = models.CharField(max_length=50, null=True, blank=True)
+    mpesa_receipt_number = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return f"Payment of {self.amount} for transaction {self.transaction.id}"
+
+    def clean(self):
+        if self.method == "M-Pesa":
+            if not self.mpesa_transaction_id or not self.mpesa_status or not self.mpesa_receipt_number:
+                raise ValidationError("M-Pesa payments must have transaction ID, status, and receipt number.")
+        else:
+            self.mpesa_transaction_id = None
+            self.mpesa_status = None
+            self.mpesa_receipt_number = None
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
 
 
 class Return(models.Model):
