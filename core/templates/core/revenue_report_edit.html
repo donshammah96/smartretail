@@ -1,4 +1,5 @@
 {% extends 'core/base.html' %}
+{% load static compress %}
 {% block title %}Edit Revenue Report{% endblock %}
 {% block header %}Edit Revenue Report{% endblock %}
 {% block content %}
@@ -9,4 +10,9 @@
     <button type="submit" class="btn btn-primary">Save Changes</button>
 </form>
 <a href="{% url 'core:revenue_report_list' %}" class="btn btn-secondary">Back to Revenue Report List</a>
+{% endblock %}
+{% block footer %}
+{% compress js %}
+<script src="{% static 'js/formValidation.js' %}"></script>
+{% endcompress %}
 {% endblock %}

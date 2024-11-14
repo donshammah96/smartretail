@@ -1,0 +1,19 @@
+{% extends 'core/base.html' %}
+{% load static compress %}
+{% block title %}Add Revenue Report{% endblock %}
+{% block header %}Add Revenue Report{% endblock %}
+{% block content %}
+<h1>Add Revenue Report</h1>
+<form method="post" action="{% url 'core:add_revenue' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Add Revenue Report</button>
+</form>
+<a href="{% url 'core:revenue_report_List' %}">View Revenue Report</a>
+<a href="{% url 'core:dashboard' %}">Back to Dashboard</a>
+{% endblock %}
+{% block footer %}
+{% compress js %}
+<script src="{% static 'js/formValidation.js' %}"></script>
+{% endcompress %}
+{% endblock %}

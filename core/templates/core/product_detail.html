@@ -1,4 +1,5 @@
 {% extends 'core/base.html' %}
+{% load static compress %}
 {% block title %}Product Detail{% endblock %}
 {% block header %}Product Detail{% endblock %}
 {% block content %}
@@ -12,6 +13,12 @@
 <p><strong>Low Stock Threshold:</strong> {{ product.low_stock_threshold }}</p>
 <p><strong>Last Restock Date:</strong> {{ product.last_restock_date }}</p>
 <p><strong>Expiration Date:</strong> {{ product.expiration_date }}</p>
-<a href="{% url 'core:edit' model_name='product' pk=product.pk %}" class="btn btn-primary">Edit Product</a>
-<a href="{% url 'core:list' model_name='product' %}" class="btn btn-secondary">Back to Product List</a>
+<a href="{% url 'core:product_edit' pk=product.pk %}" class="btn btn-primary">Edit Product</a>
+<a href="{% url 'core:product_list' %}" class="btn btn-secondary">Back to Product List</a>
+</div>
+{% endblock %}
+{% block footer %}
+{% compress js %}
+<script src="{% static 'js/toggleDetails.js' %}"></script>
+{% endcompress %}
 {% endblock %}

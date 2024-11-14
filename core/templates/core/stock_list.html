@@ -1,5 +1,5 @@
 {% extends 'core/base.html' %}
-{% load static %}
+{% load static compress %}
 {% block title %}Stock{% endblock %}
 {% block header %}Stock{% endblock %}
 {% block content %}
@@ -22,7 +22,7 @@
                 <p><strong>Stock:</strong> {{ product.stock }}</p>
             </div>
             <button class="toggle-button">Toggle Details</button>
-            <a href="{% url 'core:edit' model_name='product' pk=product.id %}">Edit</a>
+            <a href="{% url 'core:product_edit' pk=product.id %}">Edit</a>
             <hr>
         </li>
     {% empty %}
@@ -34,5 +34,8 @@
 <a href="{% url 'core:dashboard' %}">Back to Dashboard</a>
 {% endblock %}
 {% block footer %}
+{% compress js %}
 <script src="{% static 'js/dynamicList.js' %}"></script>
+<script src="{% static 'js/filterItems.js' %}"></script>
+{% endcompress %}
 {% endblock %}

@@ -1,4 +1,5 @@
 {% extends 'core/base.html' %}
+{% load static compress %}
 {% block title %}Revenue Report Detail{% endblock %}
 {% block header %}Revenue Report Detail{% endblock %}
 {% block content %}
@@ -7,6 +8,11 @@
 <p><strong>Total Revenue:</strong> {{ revenue_report.total_revenue }}</p>
 <p><strong>Total Profit:</strong> {{ revenue_report.total_profit }}</p>
 <p><strong>Details:</strong> {{ revenue_report.details }}</p>
-<a href="{% url 'core:edit' model_name='revenue_report' pk=revenue_report.pk %}" class="btn btn-primary">Edit Revenue Report</a>
-<a href="{% url 'core:list' model_name='revenue_report' %}" class="btn btn-secondary">Back to Revenue Report List</a>
+<a href="{% url 'core:revenue_report_edit' pk=revenue_report.pk %}" class="btn btn-primary">Edit Revenue Report</a>
+<a href="{% url 'core:revenue_report_list' %}" class="btn btn-secondary">Back to Revenue Report List</a>
+{% endblock %}
+{% block footer %}
+{% compress js %}
+<script src="{% static 'js/toggleDetails.js' %}"></script>
+{% endcompress %}
 {% endblock %}

@@ -1,4 +1,5 @@
 {% extends 'core/base.html' %}
+{% load static compress %}
 {% block title %}Employee Detail{% endblock %}
 {% block header %}Employee Detail{% endblock %}
 {% block content %}
@@ -11,6 +12,11 @@
 <p><strong>Hire Date:</strong> {{ employee.hire_date }}</p>
 <p><strong>Shift Schedule:</strong> {{ employee.shift_schedule }}</p>
 <a href="{% url 'core:shift_detail' employee_id=employee.pk %}" class="btn btn-info">View Shift Details</a>
-<a href="{% url 'core:edit' model_name='employee' pk=employee.pk %}" class="btn btn-primary">Edit Employee</a>
-<a href="{% url 'core:list' model_name='employee' %}" class="btn btn-secondary">Back to Employee List</a>
+<a href="{% url 'core:employee_edit' pk=employee.pk %}" class="btn btn-primary">Edit Employee</a>
+<a href="{% url 'core:employees_list' %}" class="btn btn-secondary">Back to Employee List</a>
+{% endblock %}
+{% block footer %}
+{% compress js %}
+<script src="{% static 'js/toggleDetails.js' %}"></script>
+{% endcompress %}
 {% endblock %}

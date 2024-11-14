@@ -1,5 +1,5 @@
 {% extends 'users/base.html' %}
-{% load static %}
+{% load static compress %}
 {% block title %}User Profile{% endblock %}
 {% block header %}User Profile{% endblock %}
 {% block content %}
@@ -60,5 +60,7 @@
 {% endblock %}
 {% block footer %}
 <link rel="stylesheet" href="{% static 'users/styles.css' %}">
+{% compress js %}
 <script src="{% static 'js/profile.js' %}"></script>
+{% endcompress %}
 {% endblock %}

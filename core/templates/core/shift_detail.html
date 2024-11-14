@@ -1,4 +1,5 @@
 {% extends 'core/base.html' %}
+{% load static compress %}
 {% block title %}Shift Detail{% endblock %}
 {% block header %}Shift Detail{% endblock %}
 {% block content %}
@@ -10,4 +11,9 @@
 <p><strong>Total Cash:</strong> {{ shift.total_cash }}</p>
 <a href="{% url 'core:edit' model_name='shift' pk=shift.pk %}" class="btn btn-primary">Edit Shift</a>
 <a href="{% url 'core:list' model_name='shift' %}" class="btn btn-secondary">Back to Shifts List</a>
+{% endblock %}
+{% block footer %}
+{% compress js %}
+<script src="{% static 'js/toggleDetails.js' %}"></script>
+{% endcompress %}
 {% endblock %}

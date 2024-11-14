@@ -1,0 +1,36 @@
+{
+  "name": "smartretail",
+  "version": "1.0.0",
+  "description": "Inventory Management System",
+  "main": "index.js",
+  "scripts": {
+    "heroku-postbuild": "npm run build",
+    "build:css": "sass styles/main.scss public/css/main.css --no-source-map",
+    "build:js": "browserify src/index.js -t [ babelify --presets [ @babel/preset-env ] ] -o public/js/bundle.js",
+    "watch:css": "sass --watch styles/main.scss:public/css/main.css --no-source-map",
+    "watch:js": "watchify src/index.js -t [ babelify --presets [ @babel/preset-env ] ] -o public/js/bundle.js -v",
+    "build": "npm run build:css && npm run build:js",
+    "watch": "npm run watch:css & npm run watch:js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.0.0",
+    "@babel/core": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "babelify": "^10.0.0",
+    "browserify": "^17.0.0",
+    "sass": "^1.32.0",
+    "postcss-cli": "^8.0.0",
+    "watchify": "^4.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/donshammah96/smartretail.git"
+  },
+  "author": "Don Shammah Nyareso",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/donshammah96/smartretail/issues"
+  },
+  "homepage": "https://github.com/donshammah96/smartretail#readme"
+}

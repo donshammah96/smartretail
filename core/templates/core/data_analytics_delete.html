@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %}
+{% load static compress %}
+{% block title %}Delete Data Analytics{% endblock %}
+{% block header %}Delete Data Analytics{% endblock %}
+{% block content %}
+<h1>Delete Data Analytics</h1>
+<p>Are you sure you want to delete the data analytics entry "{{ data_analytics.name }}"?</p>
+<form method="post" class="delete-form">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a href="{% url 'core:data_analytics_list' %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}
+{% block footer %}
+{% compress js %}
+<script src="{% static 'js/deleteConfirmation.js' %}"></script>
+{% endcompress %}
+{% endblock %}

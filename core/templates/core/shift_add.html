@@ -1,0 +1,19 @@
+{% extends 'core/base.html' %}
+{% load static compress %}
+{% block title %}Add Shift{% endblock %}
+{% block header %}Add Shift{% endblock %}
+{% block content %}
+<h1>Add Shift</h1>
+<form method="post" action="{% url 'core:shift_add' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Add Shift</button>
+</form>
+<a href="{% url 'core:shift_list' %}"class="btn btn-primary">View Shifts</a>
+<a href="{% url 'core:dashboard' %}"class="btn btn-primary">Back to Dashboard</a>
+{% endblock %}
+{% block footer %}
+{% compress js %}
+<script src="{% static 'js/formValidation.js' %}"></script>
+{% endcompress %}
+{% endblock %}

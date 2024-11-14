@@ -1,0 +1,2 @@
+function fadeIn(element,duration){let opacity=0;element.style.opacity=0;element.style.display="block";const increment=50/duration;const fade=setInterval(function(){opacity+=increment;element.style.opacity=opacity;if(opacity>=1){clearInterval(fade);}},50);}
+document.addEventListener('DOMContentLoaded',function(){const elements=document.body.children;for(let i=0;i<elements.length;i++){fadeIn(elements[i],1000);}});;

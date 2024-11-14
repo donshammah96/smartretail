@@ -1,5 +1,5 @@
 {% extends 'core/base.html' %}
-{% load static %}
+{% load static compress %}
 {% block title %}Customer List{% endblock %}
 {% block header %}Customer List{% endblock %}
 {% block content %}
@@ -25,15 +25,22 @@
                 <p><strong>Joined Date:</strong> {{ customer.joined_date }}</p>
             </div>
             <button class="toggle-button">Hide Details</button>
-            <a href="{% url 'core:edit' model_name='customer' pk=customer.id %}">Edit Customer</a>
+            <a href="{% url 'core:customer_edit' pk=customer.id %}">Edit Customer</a>
+            <form action="{% url 'core:customer_delete' pk=customer.id %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
             <hr>
         </li>
     {% endfor %}
 </ul>
 
-<a href="{% url 'core:add' model_name='customer' %}"class="btn btn-primary">Add Customer</a>
+<a href="{% url 'core:customer_add' %}" class="btn btn-primary">Add Customer</a>
 <a href="{% url 'core:dashboard' %}">Back to Dashboard</a>
 {% endblock %}
 {% block footer %}
+{% compress js %}
 <script src="{% static 'js/dynamicList.js' %}"></script>
+<script src="{% static 'js/filterSort.js' %}"></script>
+{% endcompress %}
 {% endblock %}

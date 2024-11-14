@@ -1,0 +1,63 @@
+{% extends 'core/base.html' %}
+{% load core_custom_filters %}
+{% load static compress %}
+
+{% block title %}{{ model_name|capfirst }} List{% endblock %}
+{% block header %}{{ model_name|capfirst }} List{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>{{ model_name|capfirst }} List</h1>
+
+        <table class="table table-striped" aria-label="{{ model_name|capfirst }} list">
+            <thead>
+                <tr role="row">
+                    {% if object_list %} 
+                        {% for field in object_list.0|get_meta_fields %}  
+                            <th scope="col" role="columnheader">{{ field.verbose_name|capfirst }}</th>
+                        {% endfor %}
+                    {% else %}
+                        <th>No fields found.</th>  {# Handle the case of an empty list #}
+                    {% endif %}
+                    <th scope="col" role="columnheader">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for object in object_list %}
+                    <tr role="row">
+                        {% if object_list %}
+                            {% for field in object_list.0|get_meta_fields %}  
+                                <td role="cell">{{ object|get_attr:field.name }}</td>
+                            {% endfor %}
+                        {% else %}
+                            <td role="cell">No fields found.</td>  {# Handle the case of an empty list #}
+                        {% endif %}
+                        <td role="cell">
+                            <a href="{% url 'core:detail' model_name=model_name pk=object.pk %}" class="btn btn-info btn-sm">Details</a>
+                            <a href="{% url 'core:edit' model_name=model_name pk=object.pk %}" class="btn btn-warning btn-sm">Edit</a>
+                            <button class="btn btn-danger btn-sm delete-button" data-url="{% url 'core:delete' model_name=model_name pk=object.pk %}" data-csrf-token="{{ csrf_token }}">Delete</button>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        {% if object_list %}
+                            <td colspan="{{ object_list.0|get_meta_fields|length|add:1 }}">No data available.</td>  
+                        {% else %}
+                            <td>No data available.</td>  {# Handle the case of an empty list #}
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{% url 'core:add' model_name=model_name %}" class="btn btn-primary">Add New {{ model_name|capfirst }}</a>
+    </div>
+{% endblock %}
+
+{% block footer %}
+    {% compress js %}
+    <script src="{% static 'js/searchSortPaginate.js' %}"></script>
+    <script src="{% static 'js/filterSort.js' %}"></script>
+    <script src="{% static 'js/deleteConfirmation.js' %}"></script>
+    {% endcompress %}
+{% endblock %}

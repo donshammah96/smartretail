@@ -1,5 +1,5 @@
 {% extends 'core/base.html' %}
-{% load static %}
+{% load static compress %}
 {% block title %}Employees List{% endblock %}
 {% block header %}Employees List{% endblock %}
 {% block content %}
@@ -25,7 +25,7 @@
                 <p><strong>Hire Date:</strong> {{ employee.hire_date }}</p>
             </div>
             <button class="toggle-button">Toggle Details</button>
-            <a href="{% url 'core:edit' model_name='employee' pk=employee.id %}">Edit</a>
+            <a href="{% url 'core:employee_edit' pk=employee.id %}">Edit</a>
             <hr>
         </li>
     {% empty %}
@@ -33,9 +33,12 @@
     {% endfor %}
 </ul>
 
-<a href="{% url 'core:add' model_name='employee' %}"class="btn btn-primary">Add Employee</a>
-<a href="{% url 'core:dashboard' %}">Back to Dashboard</a>
+<a href="{% url 'core:employee_add' %}" class="btn btn-primary">Add Employee</a>
+<a href="{% url 'core:dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
 {% endblock %}
 {% block footer %}
+{% compress js %}
 <script src="{% static 'js/dynamicList.js' %}"></script>
+<script src="{% static 'js/filterSort.js' %}"></script>
+{% endcompress %}
 {% endblock %}

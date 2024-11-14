@@ -1,0 +1,9 @@
+<div class="sidebar">
+    <h3>Manager Navigation</h3>
+    <a href="{% url 'users:manager_dashboard' %}" class="btn btn-outline-secondary">Dashboard</a>
+    <a href="{% url 'core:employee_list' %}" class="btn btn-outline-secondary">Manage Employees</a>
+    <a href="{% url 'core:product_list' %}" class="btn btn-outline-secondary">Manage Products</a> 
+    <a href="{% url 'pos:sale_list' %}" class="btn btn-outline-secondary">View Sales</a>
+    <a href="{% url 'users:user_performance_report' %}" class="btn btn-outline-secondary">Performance Report</a>
+    <a href="{% url 'users:user_activity_report' %}" class="btn btn-outline-secondary">Activity Report</a>
+  </div>

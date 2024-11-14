@@ -29,11 +29,12 @@
         <button class="btn btn-secondary mt-3" data-url="{% url 'users:logout' %}" onclick="location.href=this.getAttribute('data-url')">Logout</button>
     </div>
 
-    <!-- Content section for dynamic updates or reports -->
-    <div id="dynamicContent"></div>
+   <!-- Placeholder for the chart -->
+   <canvas id="salesChart" width="400" height="200"></canvas>
 
-    <!-- Example of a simple chart for tracking -->
-    <canvas id="salesChart" width="400" height="200"></canvas>
+   <!-- Embed performance data as JSON -->
+   {{ performance_labels|json_script:"performanceLabels" }}
+   {{ performance_data|json_script:"performanceData" }}
 </div>
 {% endblock %}
 
@@ -41,16 +42,19 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="{% static 'js/dashboard.js' %}"></script>
 <script>
-    // Custom JS for Manager Dashboard, e.g., for rendering charts
     document.addEventListener('DOMContentLoaded', function () {
+        // Retrieve the JSON data safely
+        const labels = JSON.parse(document.getElementById('performanceLabels').textContent);
+        const data = JSON.parse(document.getElementById('performanceData').textContent);
+
         const ctx = document.getElementById('salesChart').getContext('2d');
         const salesChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+                labels: labels,  // Use labels from JSON
                 datasets: [{
-                    label: 'Daily Sales',
-                    data: [1200, 1900, 3000, 500, 2000, 3000, 4000],
+                    label: 'Monthly Sales',
+                    data: data,  // Use data from JSON
                     backgroundColor: 'rgba(75, 192, 192, 0.6)',
                     borderColor: 'rgba(75, 192, 192, 1)',
                     borderWidth: 1

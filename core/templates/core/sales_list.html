@@ -1,5 +1,5 @@
 {% extends 'core/base.html' %}
-{% load static %}
+{% load static compress %}
 {% block title %}Sales{% endblock %}
 {% block header %}Sales{% endblock %}
 {% block content %}
@@ -9,9 +9,12 @@
         <li>{{ sale.id }} - {{ sale.date }}</li>
     {% endfor %}
 </ul>
-<a href="{% url 'core:add' model_name='sale' %}">Add Sale</a>
+<a href="{% url 'core:sale_add' %}">Add Sale</a>
 <a href="{% url 'core:dashboard' %}">Back to Dashboard</a>
 {% endblock %}
-{% block scripts %}
+{% block footer %}
+{% compress js %}
 <script src="{% static 'js/dynamicList.js' %}"></script>
+<script src="{% static 'js/filterSort.js' %}"></script>
+{% endcompress %}
 {% endblock %}

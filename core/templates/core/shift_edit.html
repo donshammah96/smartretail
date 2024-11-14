@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %}
+{% load static compress %}
+{% block title %}Edit Shift{% endblock %}
+{% block header %}Edit Shift{% endblock %}
+{% block content %}
+<h1>Edit Shift</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
+<a href="{% url 'core:shift_list' %}" class="btn btn-secondary">Back to Shift List</a>
+{% endblock %}
+{% block footer %}
+{% compress js %}
+<script src="{% static 'js/formValidation.js' %}"></script>
+{% endcompress %}
+{% endblock %}

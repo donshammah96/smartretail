@@ -1,0 +1,2 @@
+function fadeIn(element,delay){setTimeout(()=>{element.style.transition="opacity 0.5s ease-in-out";element.style.opacity=1;},delay);}
+const elements=document.querySelectorAll('body > *:not(script)');let delay=0;elements.forEach(element=>{fadeIn(element,delay);delay+=200;});;

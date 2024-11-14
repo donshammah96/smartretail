@@ -1,5 +1,5 @@
 {% extends 'core/base.html' %}
-{% load static %}
+{% load static compress %}
 {% block title %}Expense Report{% endblock %}
 {% block header %}Expense Report{% endblock %}
 {% block content %}
@@ -23,16 +23,19 @@
                 <p><strong>Total Expenses:</strong> {{ report.total_expenses }}</p>
             </div>
             <button class="toggle-button">Toggle Details</button>
-            <a href="{% url 'core:edit' model_name='expense_report' pk=report.id %}">Edit Expense Report</a>
+            <a href="{% url 'core:expense_report_edit' pk=report.id %}">Edit Expense Report</a>
             <hr>
         </li>
     {% empty %}
         <li>Expense report list empty</li>
     {% endfor %}
 </ul>
-<a href="{% url 'core:add' model_name='expense_report' %}"class="btn btn-primary">Add Expense Report</a>
+<a href="{% url 'core:expense_report_add' %}"class="btn btn-primary">Add Expense Report</a>
 <a href="{% url 'core:dashboard' %}">Back to Dashboard</a>
 {% endblock %}
 {% block footer %}
+{% compress js %}
 <script src="{% static 'js/dynamicList.js' %}"></script>
+<script src="{% static 'js/filterSort.js' %}"></script>
+{% endcompress %}
 {% endblock %}

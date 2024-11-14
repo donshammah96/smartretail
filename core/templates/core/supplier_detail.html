@@ -1,4 +1,5 @@
 {% extends 'core/base.html' %}
+{% load static compress %}
 {% block title %}Supplier Detail{% endblock %}
 {% block header %}Supplier Detail{% endblock %}
 {% block content %}
@@ -10,4 +11,9 @@
 <p><strong>Delivery Times:</strong> {{ supplier.delivery_times }}</p>
 <a href="{% url 'core:suppliers' %}">Back to Suppliers</a>
 <a href="{% url 'core:dashboard' %}">Dashboard</a>
+{% endblock %}
+{% block footer %}
+{% compress js %}
+<script src="{% static 'js/toggleDetails.js' %}"></script>
+{% endcompress %}
 {% endblock %}
