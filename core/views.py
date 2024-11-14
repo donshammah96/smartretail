@@ -90,6 +90,15 @@ EDIT_FORM_MAPPING = {
     "shift": (Shift, EditShiftForm),
     "category": (Category, EditCategoryForm),
     "task": (Task, EditTaskForm),
+    "product": EditProductForm,
+    "supplier": EditSupplierForm,
+    "employee": EditEmployeeForm,
+    "customer": EditCustomerForm,
+    "revenue_report": EditRevenueReportForm,
+    "expense_report": EditExpenseReportForm,
+    "data_analytics": EditDataAnalyticsForm,
+    "shift": EditShiftForm,
+    "category": EditCategoryForm,
 }
 
 # Mapping for Delete Forms
@@ -206,6 +215,9 @@ def edit_view(request, model_name, pk):
     """
     try:
         model, form_class = EDIT_FORM_MAPPING.get(model_name)  # Get both model and form class
+        model, form_class = EDIT_FORM_MAPPING.get(
+            model_name
+        )  # Get both model and form class
         instance = get_object_or_404(model, pk=pk)
         if request.method == "POST":
             form = form_class(request.POST, instance=instance)
