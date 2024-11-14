@@ -6,6 +6,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib import messages
 from pos.models import Sale
 import logging
+from django.contrib.auth.decorators import login_required
 
 from .models import (
     Employee,
@@ -17,6 +18,7 @@ from .models import (
     DataAnalytics,
     Shift,
     Category,
+    Task,
 )
 from .forms import (
     ProductForm,
@@ -56,6 +58,10 @@ from .forms import (
     DeleteRevenueReportForm,
     DeleteExpenseReportForm,
     DeleteDataAnalyticsForm,
+    TaskForm,
+    AddTaskForm,
+    EditTaskForm,
+    DeleteTaskForm,
 )
 
 # Mapping for Add Forms
@@ -69,19 +75,21 @@ ADD_FORM_MAPPING = {
     "data_analytics": AddDataAnalyticsForm,
     "shift": AddShiftForm,
     "category": AddCategoryForm,
+    "task": AddTaskForm,
 }
 
 # Mapping for Edit Forms
 EDIT_FORM_MAPPING = {
-    "product": EditProductForm,
-    "supplier": EditSupplierForm,
-    "employee": EditEmployeeForm,
-    "customer": EditCustomerForm,
-    "revenue_report": EditRevenueReportForm,
-    "expense_report": EditExpenseReportForm,
-    "data_analytics": EditDataAnalyticsForm,
-    "shift": EditShiftForm,
-    "category": EditCategoryForm,
+    "product": (Product, EditProductForm),
+    "supplier": (Supplier, EditSupplierForm),
+    "employee": (Employee, EditEmployeeForm),
+    "customer": (Customer, EditCustomerForm),
+    "revenue_report": (RevenueReport, EditRevenueReportForm),
+    "expense_report": (ExpenseReport, EditExpenseReportForm),
+    "data_analytics": (DataAnalytics, EditDataAnalyticsForm),
+    "shift": (Shift, EditShiftForm),
+    "category": (Category, EditCategoryForm),
+    "task": (Task, EditTaskForm),
 }
 
 # Mapping for Delete Forms
@@ -95,6 +103,7 @@ DELETE_FORM_MAPPING = {
     "data_analytics": (DataAnalytics, DeleteDataAnalyticsForm),
     "shift": (Shift, DeleteShiftForm),
     "category": (Category, DeleteCategoryForm),
+    "task": (Task, DeleteTaskForm),
 }
 
 # Model and Form Mapping
@@ -108,6 +117,7 @@ MODEL_FORM_MAPPING = {
     "data_analytics": (DataAnalytics, DataAnalyticsForm, EditDataAnalyticsForm),
     "shift": (Shift, ShiftForm, EditShiftForm),
     "category": (Category, CategoryForm, EditCategoryForm),
+    "task": (Task, TaskForm, EditTaskForm),
 }
 
 MODEL_TEMPLATE_MAPPING = {
@@ -121,14 +131,14 @@ MODEL_TEMPLATE_MAPPING = {
     "employee": (Employee, "core/list_detail.html", "core/add_edit.html"),
     "shift": (Shift, "core/list_detail.html", "core/add_edit.html"),
     "sale": (Sale, "core/list_detail.html", "core/add_edit.html"),
+    "task": (Task, "core/list_detail.html", "core/add_edit.html"),
 }
 
 # Get an instance of a logger
-logger = logging.getLogger(
-    "django"
-)  # Use the 'django' logger or a custom one like 'custom_logger'
+logger = logging.getLogger("django")  # Use the 'django' logger or a custom one like 'custom_logger'
 
 
+@login_required
 def my_view(request):
     try:
         # Your code here...
@@ -138,6 +148,7 @@ def my_view(request):
         logger.error(f"An error occurred: {e}")
 
 
+@login_required
 def index(request):
     # Check if the session key 'visits' exists
     if "visits" in request.session:
@@ -153,6 +164,7 @@ def index(request):
     return render(request, "core/dashboard.html", {"visits": visits})
 
 
+@login_required
 def add_view(request, model_name):
     """
     Generic view for adding new objects to the CORE system.
@@ -166,9 +178,7 @@ def add_view(request, model_name):
                 new_object = form.save()
                 if request.is_ajax():
                     return JsonResponse({"success": True, "pk": new_object.pk})
-                return redirect(
-                    reverse(f"core:{model_name}_detail", kwargs={"pk": new_object.pk})
-                )
+                return redirect(reverse(f"core:{model_name}_detail", kwargs={"pk": new_object.pk}))
             else:
                 if request.is_ajax():
                     return JsonResponse({"success": False, "errors": form.errors})
@@ -188,15 +198,14 @@ def add_view(request, model_name):
         return redirect("core:dashboard")
 
 
+@login_required
 def edit_view(request, model_name, pk):
     """
     Generic view for editing existing objects in the CORE system.
     Handles form submission and AJAX requests.
     """
     try:
-        model, form_class = EDIT_FORM_MAPPING.get(
-            model_name
-        )  # Get both model and form class
+        model, form_class = EDIT_FORM_MAPPING.get(model_name)  # Get both model and form class
         instance = get_object_or_404(model, pk=pk)
         if request.method == "POST":
             form = form_class(request.POST, instance=instance)
@@ -224,6 +233,7 @@ def edit_view(request, model_name, pk):
         return redirect("core:dashboard")
 
 
+@login_required
 def generic_list_view(request, model_name):
     """
     Generic view for displaying a paginated list of objects in the POS system.
@@ -241,9 +251,7 @@ def generic_list_view(request, model_name):
             page_obj = paginator.get_page(1)
         # If page is not an integer, deliver first page.
         except EmptyPage:
-            page_obj = paginator.get_page(
-                paginator.num_pages
-            )  # If page is out of range, deliver last page of results.
+            page_obj = paginator.get_page(paginator.num_pages)  # If page is out of range, deliver last page of results.
 
         context = {
             model_name + "_list": page_obj,
@@ -254,13 +262,12 @@ def generic_list_view(request, model_name):
         return render(request, list_template, context)
 
     except TypeError as e:
-        logger.error(
-            f"Invalid model name in generic_list_view: {model_name}, Error: {e}"
-        )
+        logger.error(f"Invalid model name in generic_list_view: {model_name}, Error: {e}")
         messages.error(request, f"Invalid model name: {model_name}")
         return redirect("core:dashboard")
 
 
+@login_required
 def generic_detail_view(request, model_name, pk):
     """
     Generic view for displaying details of an object in the CORE system.
@@ -274,9 +281,7 @@ def generic_detail_view(request, model_name, pk):
         return render(request, detail_template, context)
 
     except TypeError as e:
-        logger.error(
-            f"Invalid model name in generic_detail_view: {model_name}, Error: {e}"
-        )
+        logger.error(f"Invalid model name in generic_detail_view: {model_name}, Error: {e}")
         messages.error(request, f"Invalid model name: {model_name}")
         return redirect("core:dashboard")
 
@@ -295,6 +300,7 @@ def contact_view(request):
     return render(request, "core/contact.html")
 
 
+@login_required
 def delete_view(request, model_name, pk):
     """
     Generic view for deleting an object in the CORE system.

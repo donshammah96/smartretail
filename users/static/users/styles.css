@@ -41,10 +41,12 @@ nav {
     display: inline-flex;
     align-items: center;
     gap: 5px;
+    transition: color 0.3s ease-in-out;
 }
 
 .navbar-nav .nav-link:hover, nav a:hover {
     text-decoration: underline;
+    color: #007bff;
 }
 
 /* Main Content Styles */
@@ -82,20 +84,25 @@ main {
 
 /* Footer Styles (sticky footer) */
 footer {
-    background-color: #333;
-    color: #fff;
+    background-color: #f8f9fa;
+    color: #6c757d;
     padding: 10px 0;
     text-align: center;
     position: sticky; /* Use sticky instead of fixed */
     bottom: 0;
     width: 100%;
     margin-top: auto;
+    font-size: 0.9rem;
+}
+
+footer p {
+    margin: 0;
 }
 
 /* Dark Mode Footer */
 .dark-mode footer {
-    background-color: #222;
-    color: #ccc;
+    background-color: #333;
+    color: #bbb;
 }
 
 /* CSS Variables */
@@ -170,7 +177,7 @@ footer {
     top: 0;
     left: 0;
     height: 100%;
-    display: none;
+    display: flex;
 }
 
 @media (max-width: 768px) {
@@ -352,6 +359,50 @@ footer {
     color: #ddd;
 }
 
+body.dark-mode {
+    background-color: #121212;
+    color: #f0f0f0;
+}
+
+body.dark-mode .navbar,
+body.dark-mode .jumbotron,
+body.dark-mode footer {
+    background-color: #333;
+    color: #f0f0f0;
+}
+
+body.dark-mode .navbar-brand,
+body.dark-mode .nav-link,
+body.dark-mode .btn {
+    color: #f0f0f0;
+}
+
+body.dark-mode .btn-outline-secondary {
+    color: #f0f0f0;
+    border-color: #f0f0f0;
+}
+
+body.dark-mode .jumbotron {
+    background-color: #444;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+body.dark-mode .btn-primary {
+    background-color: #0056b3;
+    border: none;
+}
+
+body.dark-mode .btn-outline-primary {
+    border-color: #0056b3;
+    color: #0056b3;
+}
+
+body.dark-mode .btn-outline-primary:hover {
+    background-color: #0056b3;
+    color: #fff;
+}
+
 /* Hover Effect on Role-specific Dashboards */
 .dashboard-admin:hover, .dashboard-manager:hover, .dashboard-employee:hover {
     transform: translateY(-2px);
@@ -385,16 +436,176 @@ form .form-control {
 }
 /* users/styles.css */
 .container {
-    max-width: 500px;
+    max-width: 600px;
     margin-top: 30px;
     background-color: #f8f9fa;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
+/* General form styling */
+.container {
+    max-width: 600px;
+    /* ...existing code... */
+}
+
+/* Change Password Page Styling */
+.container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    /* ...existing code... */
+}
+
+/* Form label styling */
+.form-label {
+    font-weight: 600;
+    color: #333;
+    font-weight: bold;
+    /* ...existing code... */
+}
+
+/* Form Field Styling */
+.form-group input {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+}
+
+.invalid-feedback {
+    font-size: 0.85rem;
+    color: #d9534f;
+}
+
+/* Input field styling */
+input, select, textarea {
+    border-radius: 4px;
+    transition: border-color 0.3s;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Button styling */
+.btn-primary {
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+/* Button Styling */
+.btn-primary, .btn-secondary, .btn-link {
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-primary:hover, .btn-secondary:hover {
+    transform: translateY(-1px);
+    filter: brightness(95%);
+}
+
+/* Cancel and Login Link */
+.btn-link {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.btn-link:hover {
+    text-decoration: underline;
+}
+
+/* Validation feedback */
+.was-validated .form-control:invalid {
+    border-color: #dc3545;
+}
+
+.was-validated .form-control:valid {
+    border-color: #28a745;
+}
+
+/* Link styling */
+.text-primary {
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.text-primary:hover {
+    text-decoration: underline;
+    color: #0056b3;
+}
+
+/* Centering form elements for mobile */
+@media (max-width: 576px) {
+    .container {
+        padding: 0 1.5rem;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 576px) {
+    .container {
+        padding: 1.5rem;
+    }
+    .btn {
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+}
+
 .btn-danger {
     width: 100px;
 }
 .btn-secondary {
     width: 100px;
+}
+
+.btn-primary, .btn-outline-primary {
+    transition: transform 0.2s ease-in-out;
+}
+
+.btn-primary:hover, .btn-outline-primary:hover {
+    transform: scale(1.05);
+}
+
+/* Profile Picture */
+#profilePicture {
+    border-radius: 50%;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Button Styling */
+.btn-primary, .btn-warning, .btn-secondary, .btn-outline-secondary {
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-primary:hover, .btn-warning:hover, .btn-secondary:hover, .btn-outline-secondary:hover {
+    transform: translateY(-2px);
+    filter: brightness(90%);
+}
+
+/* Preview Picture */
+#preview img {
+    margin-top: 8px;
+    border-radius: 50%;
+}
+
+/* Responsive Design */
+@media (max-width: 576px) {
+    .container {
+        padding: 0 1.5rem;
+    }
+    .table {
+        font-size: 0.9rem;
+    }
+    #profilePicture, #preview img {
+        width: 80px;
+    }
 }

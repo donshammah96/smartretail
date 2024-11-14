@@ -4,63 +4,68 @@
 {% block header %}User Profile{% endblock %}
 
 {% block content %}
-<h1>User Profile</h1>
+<div class="profile-info container mt-5">
+    <h2 class="text-center">Profile Information</h2>
+    <div class="card p-4 shadow-sm">
+        <table class="table table-borderless">
+            <tbody>
+                <tr>
+                    <th scope="row">Username</th>
+                    <td>{{ user.username }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Email</th>
+                    <td>{{ user.email }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">First Name</th>
+                    <td>{{ user.first_name }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Last Name</th>
+                    <td>{{ user.last_name }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Role</th>
+                    <td>{{ user.get_role_display }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Address</th>
+                    <td>{{ user.address|default:"Not specified" }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">City</th>
+                    <td>{{ user.city|default:"Not specified" }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Profile Picture</th>
+                    <td>
+                        {% if user.profile_picture %}
+                            <img src="{{ user.profile_picture.url }}" alt="Profile Picture" width="100" id="profilePicture" class="rounded-circle">
+                        {% else %}
+                            <p>No profile picture uploaded.</p>
+                        {% endif %}
+                        <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
+                        <button id="uploadButton" class="btn btn-outline-secondary mt-2">Upload New Picture</button>
+                        <div id="preview" class="mt-3" style="display: none;">
+                            <img id="previewImg" src="#" alt="Preview" width="100" class="rounded-circle border">
+                            <p class="text-muted small">Preview of new picture</p>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-<div class="profile-info container">
-    <h2>Profile Information</h2>
-    <table class="table table-bordered">
-        <tbody>
-            <tr>
-                <th scope="row">Username</th>
-                <td>{{ user.username }}</td>
-            </tr>
-            <tr>
-                <th scope="row">Email</th>
-                <td>{{ user.email }}</td>
-            </tr>
-            <tr>
-                <th scope="row">First Name</th>
-                <td>{{ user.first_name }}</td>
-            </tr>
-            <tr>
-                <th scope="row">Last Name</th>
-                <td>{{ user.last_name }}</td>
-            </tr>
-            <tr>
-                <th scope="row">Role</th>
-                <td>{{ user.get_role_display }}</td>
-            </tr>
-            <tr>
-                <th scope="row">Address</th>
-                <td>{{ user.address|default:"Not specified" }}</td>
-            </tr>
-            <tr>
-                <th scope="row">City</th>
-                <td>{{ user.city|default:"Not specified" }}</td>
-            </tr>
-            <tr>
-                <th scope="row">Profile Picture</th>
-                <td>
-                    {% if user.profile_picture %}
-                        <img src="{{ user.profile_picture.url }}" alt="Profile Picture" width="100" id="profilePicture">
-                    {% else %}
-                        <p>No profile picture uploaded.</p>
-                    {% endif %}
-                    <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
-                    <button id="uploadButton" class="btn btn-secondary mt-2">Upload New Picture</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="profile-actions mt-4 text-center">
+        <a href="{% url 'users:edit_profile' %}" class="btn btn-primary me-2">Edit Profile</a>
+        <a href="{% url 'users:change_password' %}" class="btn btn-warning">Change Password</a>
+    </div>
+
+    <div class="text-center mt-3">
+        <a href="{% url 'users:dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
 </div>
-
-<div class="profile-actions mt-4">
-    <a href="{% url 'users:edit_profile' %}" class="btn btn-primary">Edit Profile</a>
-    <a href="{% url 'users:change_password' %}" class="btn btn-warning">Change Password</a>
-</div>
-
-<a href="{% url 'users:dashboard' %}" class="btn btn-secondary mt-3">Back to Dashboard</a>
-
 {% endblock %}
 
 {% block footer %}
@@ -71,8 +76,17 @@
     document.getElementById('uploadButton').addEventListener('click', function() {
         document.getElementById('profilePictureInput').click();
     });
-    document.getElementById('profilePictureInput').addEventListener('change', function() {
-        // JavaScript to handle file selection and upload
+    
+    document.getElementById('profilePictureInput').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('previewImg').src = e.target.result;
+                document.getElementById('preview').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
     });
 </script>
 {% endcompress %}

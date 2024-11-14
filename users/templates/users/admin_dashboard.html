@@ -9,6 +9,7 @@
     <p>Welcome to the Admin Dashboard.</p>
 
     <div class="row"> 
+        <!-- Sidebar for admin menu -->
         <div class="col-md-4">  
             <h3>Admin Menu</h3>
             <a href="{% url 'core:list' model_name='employee' %}" class="btn btn-primary btn-block mb-2">Manage Employees</a>
@@ -18,8 +19,15 @@
             <a href="{% url 'admin:index' %}" class="btn btn-primary btn-block mb-2">Admin Management</a>
             <a href="{% url 'users:logout' %}" class="btn btn-secondary btn-block mt-3">Logout</a>
         </div>
+        
+        <!-- Main content area for chart -->
         <div class="col-md-8">
-            <canvas id="salesChart" width="400" height="200"></canvas>
+            <div id="chartContainer">
+                <div id="chartLoading" class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <canvas id="salesChart" width="400" height="200" style="display: none;"></canvas>
+            </div>
         </div>
     </div>
 </div>
@@ -29,14 +37,18 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Fetch chart data using AJAX (replace with your actual endpoint)
+        // Show loading indicator
+        const chartLoading = document.getElementById('chartLoading');
+        const salesChart = document.getElementById('salesChart');
+        
+        // Fetch chart data using AJAX
         fetch('/api/chart-data/') 
             .then(response => response.json())
             .then(data => {
                 const labels = data.labels;
                 const salesData = data.data;
 
-                const ctx = document.getElementById('salesChart').getContext('2d');
+                const ctx = salesChart.getContext('2d');
                 new Chart(ctx, {
                     type: 'bar',
                     data: {
@@ -57,12 +69,17 @@
                         }
                     }
                 });
+
+                // Hide loading indicator and display chart
+                chartLoading.style.display = 'none';
+                salesChart.style.display = 'block';
             })
             .catch(error => {
                 console.error('Error fetching chart data:', error);
-                // Display an error message to the user (e.g., in the chart area)
-                const chartContainer = document.getElementById('salesChart').parentElement;
-                chartContainer.innerHTML = '<p class="text-danger">Error loading chart data.</p>'; 
+                
+                // Display an error message in place of the chart
+                const chartContainer = document.getElementById('chartContainer');
+                chartContainer.innerHTML = '<p class="text-danger">Error loading chart data. Please try again later.</p>'; 
             });
     });
 </script>

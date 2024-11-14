@@ -188,6 +188,33 @@ class Employee(models.Model):
         )
 
 
+class Task(models.Model):
+    """
+    Model representing a task assigned to an employee.
+    """
+
+    employee = models.ForeignKey(
+        Employee, on_delete=models.CASCADE, related_name="tasks"
+    )
+    title = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    assigned_date = models.DateTimeField(default=timezone.now)
+    due_date = models.DateTimeField(null=True, blank=True)
+    completed = models.BooleanField(default=False)
+    completion_date = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f"Task: {self.title} for {self.employee.name}"
+
+    def mark_completed(self):
+        """
+        Mark the task as completed and set the completion date.
+        """
+        self.completed = True
+        self.completion_date = timezone.now()
+        self.save()
+
+
 class ExpenseReport(models.Model):
     """
     Model representing an expense report.
@@ -349,3 +376,4 @@ class RevenueReport(models.Model):
 
     def __str__(self):
         return f"Revenue Report - {self.report_date.date()}"
+

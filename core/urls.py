@@ -9,7 +9,7 @@ urlpatterns = [
     path("<str:model_name>/edit/<int:pk>/", views.edit_view, name="edit"),
     path("<str:model_name>/list/", views.generic_list_view, name="list"),
     path("<str:model_name>/detail/<int:pk>/", views.generic_detail_view, name="detail"),
-    path("detele/<str:model_name>/<int:pk>/", views.delete_view, name="delete"),
+    path("delete/<str:model_name>/<int:pk>/", views.delete_view, name="delete"),
     # Products URLs
     path(
         "products/",
@@ -370,6 +370,34 @@ urlpatterns = [
                     views.delete_view,
                     {"model_name": "product"},
                     name="stock_delete",
+                ),
+            ]
+        ),
+    ),
+    # Tasks URLs
+    path(
+        "tasks/",
+        include(
+            [
+                path("", views.generic_list_view, {"model": "Task"}, name="task_list"),
+                path(
+                    "<int:pk>/",
+                    views.generic_detail_view,
+                    {"model": "Task"},
+                    name="task_detail",
+                ),
+                path("add/", views.add_view, {"model_name": "task"}, name="task_add"),
+                path(
+                    "edit/<int:pk>/",
+                    views.edit_view,
+                    {"model_name": "task"},
+                    name="task_edit",
+                ),
+                path(
+                    "delete/<int:pk>/",
+                    views.delete_view,
+                    {"model_name": "task"},
+                    name="task_delete",
                 ),
             ]
         ),

@@ -167,3 +167,4 @@ class UserStats(models.Model):
 
     def __str__(self):
         return f"Stats for {self.user.username}"
+

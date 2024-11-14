@@ -12,6 +12,12 @@
             <script id="performanceChartData" type="application/json">
                 {{ chart_data|safe }}
             </script>
+            <div id="chartContainer">
+                <canvas id="performanceChart" width="400" height="200"></canvas>
+                <div id="chartLoading" class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
             {% include 'users/_stats_cards.html' with stats=stats %}
             {% if user.role != 'admin' %}
                 {% include 'users/_performance_chart.html' %}
@@ -36,6 +42,10 @@
         });
 
         document.addEventListener('DOMContentLoaded', function () {
+            // Show loading indicator
+            const chartLoading = document.getElementById('chartLoading');
+            chartLoading.style.display = 'block';
+
             // Initialize Chart.js only if the user is a manager or employee
             const userRole = '{{ user.role }}';
             if (['manager', 'employee'].includes(userRole)) {
@@ -64,6 +74,9 @@
                         }
                     }
                 });
+
+                // Hide loading indicator
+                chartLoading.style.display = 'none';
             }
         });
     </script>

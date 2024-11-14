@@ -13,6 +13,7 @@ from .models import (
     DataAnalytics,
     Shift,
     Category,
+    Task,
 )
 
 
@@ -426,4 +427,44 @@ class DeleteDataAnalyticsForm(forms.ModelForm):
 
     class Meta:
         model = DataAnalytics
+        fields = []
+
+
+class TaskForm(forms.ModelForm):
+    """
+    Form for creating and updating Task instances.
+    """
+
+    class Meta:
+        model = Task
+        fields = "__all__"
+
+
+class AddTaskForm(forms.ModelForm):
+    """
+    Form for adding new Task instances.
+    """
+
+    class Meta:
+        model = Task
+        fields = "__all__"
+
+
+class EditTaskForm(forms.ModelForm):
+    """
+    Form for editing existing Task instances.
+    """
+
+    class Meta:
+        model = Task
+        fields = "__all__"
+
+
+class DeleteTaskForm(forms.ModelForm):
+    """
+    Form for deleting existing Task instances.
+    """
+
+    class Meta:
+        model = Task
         fields = []

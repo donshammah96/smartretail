@@ -1,5 +1,6 @@
 {% extends 'core/base.html' %}
 {% load static compress %}
+{% load crispy_forms_tags %}
 
 {% block title %}
     {% if is_edit %}Edit {{ model_name|capfirst }}{% else %}Add {{ model_name|capfirst }}{% endif %}
@@ -14,20 +15,9 @@
         <h1>{% if is_edit %}Edit {{ model_name|capfirst }}{% else %}Add {{ model_name|capfirst }}{% endif %}</h1>
         {% debug %}
 
-
         <form method="post" action="{% if is_edit %}{% url 'core:edit' model_name=model_name pk=object.pk %}{% else %}{% url 'core:add' model_name=model_name %}{% endif %}">
             {% csrf_token %}
-            {% for field in form %}
-                <div class="mb-3">  {# Add margin-bottom for spacing #}
-                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                    {{ field }}
-                    {% if field.errors %}
-                        <div class="invalid-feedback">
-                            {{ field.errors }}
-                        </div>
-                    {% endif %}
-                </div>
-            {% endfor %}
+            {{ form|crispy }}
             <button type="submit" class="btn btn-primary">
                 {% if is_edit %}Save Changes{% else %}Add{% endif %}
             </button>

@@ -113,9 +113,15 @@ def home(request):
     Redirects logged-in users to the main dashboard.
     """
     if request.user.is_authenticated:
-        return redirect(
-            "users:dashboard"
-        )  # Redirect all authenticated users to the main dashboard
+        user_role = request.user.role
+        if user_role == 'admin':
+            return redirect('users:admin_dashboard')
+        elif user_role == 'manager':
+            return redirect('users:manager_dashboard')
+        elif user_role == 'employee':
+            return redirect('users:employee_dashboard')
+        else:
+            return redirect('users:dashboard')
 
     # Render the home page for non-authenticated users
     context = {

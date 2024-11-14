@@ -7,6 +7,7 @@ from django.utils import timezone
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 import logging
 import json
 
@@ -142,6 +143,7 @@ logger = logging.getLogger(
 )  # Use the 'django' logger or a custom one like 'custom_logger'
 
 
+@login_required
 def my_view(request):
     try:
         # Your code here...
@@ -151,6 +153,7 @@ def my_view(request):
         logger.error(f"An error occurred: {e}")
 
 
+@login_required
 def index(request):
     # Check if the session key 'visits' exists
     if "visits" in request.session:
@@ -166,6 +169,7 @@ def index(request):
     return render(request, "pos/dashboard.html", {"visits": visits})
 
 
+@login_required
 def add_view(request, model_name):
     """
     Generic view for adding new objects to the POS system.
@@ -201,6 +205,7 @@ def add_view(request, model_name):
         return redirect("pos:dashboard")
 
 
+@login_required
 def edit_view(request, model_name, pk):
     """
     Generic view for editing existing objects in the POS system.
@@ -237,6 +242,7 @@ def edit_view(request, model_name, pk):
         return redirect("pos:dashboard")
 
 
+@login_required
 def generic_list_view(request, model_name):
     """
     Generic view for displaying a paginated list of objects in the POS system.
@@ -274,6 +280,7 @@ def generic_list_view(request, model_name):
         return redirect("pos:dashboard")
 
 
+@login_required
 def generic_detail_view(request, model_name, pk):
     """
     Generic view for displaying details of an object in the POS system.
@@ -294,6 +301,7 @@ def generic_detail_view(request, model_name, pk):
         return redirect("pos:dashboard")
 
 
+@login_required
 def delete_view(request, model_name, pk):
     """
     Generic view for deleting an object in the POS system.
@@ -392,6 +400,7 @@ def mpesa_confirmation(request):
         return JsonResponse({'ResultCode': 0, 'ResultDesc': 'Accepted'})
     return JsonResponse({'ResultCode': 1, 'ResultDesc': 'Invalid Request Method'})
 
+@login_required
 def initiate_payment(request, transaction_id):
     if request.method == 'POST':
         phone_number = request.POST['phone_number']

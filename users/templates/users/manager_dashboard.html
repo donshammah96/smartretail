@@ -27,12 +27,18 @@
         <button class="btn btn-primary" data-url="{% url 'pos:list' model_name='inventory' %}" onclick="location.href=this.getAttribute('data-url')">Inventory Management</button>
         
         <button class="btn btn-primary" data-url="{% url 'pos:list' model_name='sale' %}" onclick="location.href=this.getAttribute('data-url')">Sales Management</button>
+        
         <!-- Logout Button -->
         <button class="btn btn-secondary mt-3" data-url="{% url 'users:logout' %}" onclick="location.href=this.getAttribute('data-url')">Logout</button>
     </div>
 
    <!-- Placeholder for the chart -->
-   <canvas id="salesChart" width="400" height="200"></canvas>
+   <div id="chartContainer">
+       <canvas id="salesChart" width="400" height="200"></canvas>
+       <div id="chartLoading" class="spinner-border text-primary" role="status">
+           <span class="visually-hidden">Loading...</span>
+       </div>
+   </div>
 
    <!-- Embed performance data as JSON -->
    {{ performance_labels|json_script:"performanceLabels" }}
@@ -45,6 +51,10 @@
 <script src="{% static 'js/dashboard.js' %}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        // Show loading indicator
+        const chartLoading = document.getElementById('chartLoading');
+        chartLoading.style.display = 'block';
+
         // Retrieve the JSON data safely
         const labels = JSON.parse(document.getElementById('performanceLabels').textContent);
         const data = JSON.parse(document.getElementById('performanceData').textContent);
@@ -70,6 +80,9 @@
                 }
             }
         });
+
+        // Hide loading indicator
+        chartLoading.style.display = 'none';
     });
 </script>
 {% endblock %}

@@ -1,4 +1,5 @@
 {% extends 'pos/base.html' %}
+{% load crispy_forms_tags %}
 
 {% block title %}Initiate M-Pesa Payment{% endblock %}
 
@@ -23,7 +24,7 @@
             <label for="account_reference" class="form-label">Account Reference:</label>
             <input type="text" id="account_reference" name="account_reference" class="form-control" required>
         </div>
-        <button type="submit" class="btn btn-primary">Initiate Payment</button>
+        {{ form|crispy }}
     </form>
 </div>
 {% endblock %}
